@@ -78,16 +78,8 @@ func (l *Lexer) readChar() {
 }
 
 func (l *Lexer) readIdentifier() string {
-	// var iden string
-
-	// for isLetter(l.ch) {
-	// 	iden += string(l.ch)
-	// 	l.readChar()
-	// }
-
-	// return iden
-
 	position := l.position
+
 	for isLetter(l.ch) {
 		l.readChar()
 	}
@@ -96,16 +88,8 @@ func (l *Lexer) readIdentifier() string {
 }
 
 func (l *Lexer) readNumber() string {
-	// var iden string
-
-	// for isLetter(l.ch) {
-	// 	iden += string(l.ch)
-	// 	l.readChar()
-	// }
-
-	// return iden
-
 	position := l.position
+
 	for isDigit(l.ch) {
 		l.readChar()
 	}
