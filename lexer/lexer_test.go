@@ -12,10 +12,38 @@ func TestNextToken(t *testing.T) {
 	var ten = 10;
 	
 	var add = fn(x, y) {
-		x + y;
+		return x + y;
+	};
+
+	var multiply = fn(x, y) {
+		return x * y;
+	};
+
+	var devide = fn(x, y) {
+		if(y > 0){
+			return x / y;
+		}else{
+			return 0;
+		}
+	};
+
+	var max = fn(x, y) {
+		if(x > y){
+			return x ;
+		}
+
+		if(x < y){
+			return y ;
+		}
+
+		return x;
 	};
 	
-	var result = add(five, ten);`
+	var addition = add(five, ten);
+	var multiplication = multiply(five, ten);
+	var devision = devide(five, ten);
+	var maximum = max(five, ten);
+`
 
 	cases := []struct {
 		tokenType    token.TokenType
@@ -43,6 +71,7 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "y"},
 		{token.RPARENT, ")"},
 		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
 		{token.IDENT, "x"},
 		{token.PLUS, "+"},
 		{token.IDENT, "y"},
@@ -51,7 +80,95 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 
 		{token.VAR, "var"},
-		{token.IDENT, "result"},
+		{token.IDENT, "multiply"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.IDENT, "y"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.MULTP, "*"},
+		{token.IDENT, "y"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "devide"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.IDENT, "y"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.IF, "if"},
+		{token.LPARENT, "("},
+		{token.IDENT, "y"},
+		{token.GT, ">"},
+		{token.INT, "0"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.SLASH, "/"},
+		{token.IDENT, "y"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "max"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.IDENT, "y"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.IF, "if"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.GT, ">"},
+		{token.IDENT, "y"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.IF, "if"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.LT, "<"},
+		{token.IDENT, "y"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "y"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "addition"},
 		{token.ASSIGN, "="},
 		{token.IDENT, "add"},
 		{token.LPARENT, "("},
@@ -60,6 +177,40 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "ten"},
 		{token.RPARENT, ")"},
 		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "multiplication"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "multiply"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
+		{token.COMMA, ","},
+		{token.IDENT, "ten"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "devision"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "devide"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
+		{token.COMMA, ","},
+		{token.IDENT, "ten"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "maximum"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "max"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
+		{token.COMMA, ","},
+		{token.IDENT, "ten"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
 		{token.EOF, ""},
 	}
 
