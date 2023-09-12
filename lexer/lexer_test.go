@@ -27,6 +27,14 @@ func TestNextToken(t *testing.T) {
 		}
 	};
 
+	var isPositive = fn(x) {
+		if(x > 0){
+			return true;
+		}else{
+			return false;
+		}
+	};
+
 	var max = fn(x, y) {
 		if(x > y){
 			return x ;
@@ -43,6 +51,7 @@ func TestNextToken(t *testing.T) {
 	var multiplication = multiply(five, ten);
 	var devision = devide(five, ten);
 	var maximum = max(five, ten);
+	var fiveIsPositive = isPositive(five);
 `
 
 	cases := []struct {
@@ -130,6 +139,34 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 
 		{token.VAR, "var"},
+		{token.IDENT, "isPositive"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.IF, "if"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.GT, ">"},
+		{token.INT, "0"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.FALSE, "false"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
 		{token.IDENT, "max"},
 		{token.ASSIGN, "="},
 		{token.FUNCTION, "fn"},
@@ -208,6 +245,15 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "five"},
 		{token.COMMA, ","},
 		{token.IDENT, "ten"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "fiveIsPositive"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "isPositive"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
 		{token.RPARENT, ")"},
 		{token.SEMICOLON, ";"},
 
