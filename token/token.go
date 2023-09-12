@@ -25,14 +25,18 @@ const (
 	FALSE    = "FALSE"
 
 	// operators
-	ASSIGN = "="
-	PLUS   = "+"
-	MINUS  = "-"
-	MULTP  = "*"
-	SLASH  = "/"
-	BANG   = "!"
-	GT     = ">"
-	LT     = "<"
+	ASSIGN  = "="
+	PLUS    = "+"
+	MINUS   = "-"
+	MULTP   = "*"
+	SLASH   = "/"
+	BANG    = "!"
+	GT      = ">"
+	LT      = "<"
+	EQUAL   = "=="
+	GTEQUAL = ">="
+	LTEQUAL = "<="
+	NOTEQU  = "!="
 
 	// delimiters
 	COMMA     = ","

@@ -28,11 +28,23 @@ func TestNextToken(t *testing.T) {
 	};
 
 	var isPositive = func(x) {
-		if(x > 0){
+		if(x >= 0){
 			return true;
 		}else{
 			return false;
 		}
+	};
+
+	var isZero = func(x) {
+		return x == 0;
+	};
+
+	var isNotZero = func(x) {
+		return x != 0;
+	};
+
+	var isNegativeOrZero = func(x) {
+		return x <= 0;
 	};
 
 	var max = func(x, y) {
@@ -52,6 +64,9 @@ func TestNextToken(t *testing.T) {
 	var devision = devide(five, ten);
 	var maximum = max(five, ten);
 	var fiveIsPositive = isPositive(five);
+	var fiveIsZero = isZero(five);
+	var fiveIsNotZero = isNotZero(five);
+	var tenIsNegativeOrZero = isNegativeOrZero(five);
 `
 
 	cases := []struct {
@@ -149,7 +164,7 @@ func TestNextToken(t *testing.T) {
 		{token.IF, "if"},
 		{token.LPARENT, "("},
 		{token.IDENT, "x"},
-		{token.GT, ">"},
+		{token.GTEQUAL, ">="},
 		{token.INT, "0"},
 		{token.RPARENT, ")"},
 		{token.LBRACE, "{"},
@@ -163,6 +178,54 @@ func TestNextToken(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "isZero"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "func"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.EQUAL, "=="},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "isNotZero"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "func"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.NOTEQU, "!="},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "isNegativeOrZero"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "func"},
+		{token.LPARENT, "("},
+		{token.IDENT, "x"},
+		{token.RPARENT, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.IDENT, "x"},
+		{token.LTEQUAL, "<="},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
 
@@ -252,6 +315,33 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "fiveIsPositive"},
 		{token.ASSIGN, "="},
 		{token.IDENT, "isPositive"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "fiveIsZero"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "isZero"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "fiveIsNotZero"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "isNotZero"},
+		{token.LPARENT, "("},
+		{token.IDENT, "five"},
+		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "tenIsNegativeOrZero"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "isNegativeOrZero"},
 		{token.LPARENT, "("},
 		{token.IDENT, "five"},
 		{token.RPARENT, ")"},

@@ -18,11 +18,23 @@ var devide = func(x, y) {
 };
 
 var isPositive = func(x) {
-	if(x > 0){
+	if(x >= 0){
 		return true;
 	}else{
 		return false;
 	}
+};
+
+var isZero = func(x) {
+	return x == 0;
+};
+
+var isNotZero = func(x) {
+	return x != 0;
+};
+
+var isNegativeOrZero = func(x) {
+	return x <= 0;
 };
 
 var max = func(x, y) {
@@ -42,3 +54,6 @@ var multiplication = multiply(five, ten);
 var devision = devide(five, ten);
 var maximum = max(five, ten);
 var fiveIsPositive = isPositive(five);
+var fiveIsZero = isZero(five);
+var fiveIsNotZero = isNotZero(five);
+var tenIsNegativeOrZero = isNegativeOrZero(five);
