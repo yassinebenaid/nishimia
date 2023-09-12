@@ -11,15 +11,15 @@ func TestNextToken(t *testing.T) {
 	var five = 5;
 	var ten = 10;
 	
-	var add = fn(x, y) {
+	var add = func(x, y) {
 		return x + y;
 	};
 
-	var multiply = fn(x, y) {
+	var multiply = func(x, y) {
 		return x * y;
 	};
 
-	var devide = fn(x, y) {
+	var devide = func(x, y) {
 		if(y > 0){
 			return x / y;
 		}else{
@@ -27,7 +27,7 @@ func TestNextToken(t *testing.T) {
 		}
 	};
 
-	var isPositive = fn(x) {
+	var isPositive = func(x) {
 		if(x > 0){
 			return true;
 		}else{
@@ -35,7 +35,7 @@ func TestNextToken(t *testing.T) {
 		}
 	};
 
-	var max = fn(x, y) {
+	var max = func(x, y) {
 		if(x > y){
 			return x ;
 		}
@@ -73,7 +73,7 @@ func TestNextToken(t *testing.T) {
 		{token.VAR, "var"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "func"},
 		{token.LPARENT, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
@@ -91,7 +91,7 @@ func TestNextToken(t *testing.T) {
 		{token.VAR, "var"},
 		{token.IDENT, "multiply"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "func"},
 		{token.LPARENT, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
@@ -109,7 +109,7 @@ func TestNextToken(t *testing.T) {
 		{token.VAR, "var"},
 		{token.IDENT, "devide"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "func"},
 		{token.LPARENT, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
@@ -141,7 +141,7 @@ func TestNextToken(t *testing.T) {
 		{token.VAR, "var"},
 		{token.IDENT, "isPositive"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "func"},
 		{token.LPARENT, "("},
 		{token.IDENT, "x"},
 		{token.RPARENT, ")"},
@@ -169,7 +169,7 @@ func TestNextToken(t *testing.T) {
 		{token.VAR, "var"},
 		{token.IDENT, "max"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "func"},
 		{token.LPARENT, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
