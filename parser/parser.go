@@ -1,16 +1,20 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/yassinebenaid/nishimia/ast"
 	"github.com/yassinebenaid/nishimia/lexer"
 	"github.com/yassinebenaid/nishimia/token"
 )
 
 type Parser struct {
-	lex *lexer.Lexer
+	lex *lexer.Lexer // the lexer to gain tokens
 
-	currentToken token.Token
-	peekToken    token.Token
+	currentToken token.Token // refers to the current token under examination
+	peekToken    token.Token // refers to the next token after currentToken
+
+	errors []string // holds all parsing errors
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -55,6 +59,8 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		return true
 	}
 
+	p.peekError(t)
+
 	return false
 }
 
@@ -64,4 +70,15 @@ func (p *Parser) peekTokenIs(t token.TokenType) bool {
 
 func (p *Parser) currentTokenIs(t token.TokenType) bool {
 	return t == p.currentToken.Type
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	p.errors = append(
+		p.errors,
+		fmt.Sprintf(`unexpected token  "%s" , expected "%s"`, p.peekToken.Literal, t),
+	)
 }
