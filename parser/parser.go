@@ -28,17 +28,13 @@ func (p *Parser) nextToken() {
 }
 
 func (p *Parser) ParseProgram() *ast.Program {
-	prog := &ast.Program{}
-	prog.Statements = make([]ast.Statement, 0)
+	var stat ast.Statement
+	var prog = &ast.Program{}
 
-	for p.currentToken.Type != token.EOF {
-		stat := p.parseStatement()
-
-		if stat != nil {
+	for ; !p.currentTokenIs(token.EOF); p.nextToken() {
+		if stat = p.parseStatement(); stat != nil {
 			prog.Statements = append(prog.Statements, stat)
 		}
-
-		p.nextToken()
 	}
 
 	return prog
@@ -47,30 +43,10 @@ func (p *Parser) ParseProgram() *ast.Program {
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.currentToken.Type {
 	case token.VAR:
-		return p.parseVarStatement()
+		return p.parseVarBindingStatement()
 	default:
 		return nil
 	}
-}
-
-func (p *Parser) parseVarStatement() ast.Statement {
-	stat := &ast.VarStatement{Token: p.currentToken}
-
-	if !p.expectPeek(token.IDENT) {
-		return nil
-	}
-
-	stat.Name = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
-
-	if !p.expectPeek(token.ASSIGN) {
-		return nil
-	}
-
-	for !p.currentTokenIs(token.SEMICOLON) {
-		p.nextToken()
-	}
-
-	return stat
 }
 
 func (p *Parser) expectPeek(t token.TokenType) bool {
