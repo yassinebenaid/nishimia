@@ -70,6 +70,41 @@ func testVarStatement(t *testing.T, s ast.Statement, name string) bool {
 	return true
 }
 
+func TestReturnStatementParser(t *testing.T) {
+	input := `
+	return 5;
+	return 5 == 7;
+	return add(4,5);
+	`
+
+	lex := lexer.New(input)
+	par := New(lex)
+
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 3 {
+		t.Fatalf("expected 3 statemnts, got %d", len(program.Statements))
+	}
+
+	for _, stat := range program.Statements {
+		ret, ok := stat.(*ast.ReturnStatement)
+
+		if !ok {
+			t.Errorf("the statement type is not ast.ReturnStatement, got %T", stat)
+			continue
+		}
+
+		if ret.Token.Literal != "return" {
+			t.Errorf("statement.Token.Literal is not 'return', got %s", ret.Token.Literal)
+		}
+
+		if ret.TokenLiteral() != "return" {
+			t.Errorf("statement.Token.Literal is not 'return', got %s", ret.TokenLiteral())
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
