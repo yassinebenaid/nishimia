@@ -38,3 +38,18 @@ func (p *Parser) parsePrefixExpressions() ast.Expression {
 
 	return exp
 }
+
+func (p *Parser) parseInfixExpressions(left ast.Expression) ast.Expression {
+	exp := &ast.InfixExpression{
+		Token:    p.currentToken,
+		Operator: p.currentToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.currentPrecedence()
+	p.nextToken()
+
+	exp.Right = p.parseExpression(precedence)
+
+	return exp
+}

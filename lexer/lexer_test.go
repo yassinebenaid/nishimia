@@ -115,7 +115,7 @@ func TestNextToken(t *testing.T) {
 		{token.LBRACE, "{"},
 		{token.RETURN, "return"},
 		{token.IDENT, "x"},
-		{token.MULTP, "*"},
+		{token.ASTERISK, "*"},
 		{token.IDENT, "y"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},

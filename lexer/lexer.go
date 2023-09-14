@@ -36,7 +36,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '-':
 		tok = newToken(token.MINUS, '-')
 	case '*':
-		tok = newToken(token.MULTP, '*')
+		tok = newToken(token.ASTERISK, '*')
 	case '(':
 		tok = newToken(token.LPARENT, '(')
 	case ')':

@@ -14,11 +14,24 @@ const (
 	EQUALS      // ==
 	LESSGREATER // < OR >
 	SUM         //+
-	PRODUCT     // -
+	PRODUCT     // *
 	PREFIX      // !X or -X
 	CALL        // myFunction(x)
 
 )
+
+var precedences = map[token.TokenType]int{
+	token.EQUAL:    EQUALS,
+	token.NOTEQU:   EQUALS,
+	token.LT:       LESSGREATER,
+	token.GT:       LESSGREATER,
+	token.GTEQUAL:  LESSGREATER,
+	token.LTEQUAL:  LESSGREATER,
+	token.PLUS:     SUM,
+	token.MINUS:    SUM,
+	token.SLASH:    PRODUCT,
+	token.ASTERISK: PRODUCT,
+}
 
 type Parser struct {
 	lex *lexer.Lexer // the lexer to gain tokens
@@ -45,6 +58,18 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseInteger)
 	p.registerPrefix(token.BANG, p.parsePrefixExpressions)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpressions)
+
+	p.infixPareseFns = make(map[token.TokenType]infixParseFn)
+	p.registerInfix(token.PLUS, p.parseInfixExpressions)
+	p.registerInfix(token.MINUS, p.parseInfixExpressions)
+	p.registerInfix(token.ASTERISK, p.parseInfixExpressions)
+	p.registerInfix(token.SLASH, p.parseInfixExpressions)
+	p.registerInfix(token.EQUAL, p.parseInfixExpressions)
+	p.registerInfix(token.NOTEQU, p.parseInfixExpressions)
+	p.registerInfix(token.LT, p.parseInfixExpressions)
+	p.registerInfix(token.GT, p.parseInfixExpressions)
+	p.registerInfix(token.GTEQUAL, p.parseInfixExpressions)
+	p.registerInfix(token.LTEQUAL, p.parseInfixExpressions)
 
 	p.nextToken()
 	p.nextToken()
@@ -121,4 +146,20 @@ func (p *Parser) registerInfix(t token.TokenType, fn infixParseFn) {
 
 func (p *Parser) noPrefixParseFnError(t token.TokenType) {
 	p.errors = append(p.errors, fmt.Sprintf("no prefix parse function for %s found", t))
+}
+
+func (p *Parser) peekPrecedence() int {
+	if prec, ok := precedences[p.peekToken.Type]; ok {
+		return prec
+	}
+
+	return LOWEST
+}
+
+func (p *Parser) currentPrecedence() int {
+	if prec, ok := precedences[p.currentToken.Type]; ok {
+		return prec
+	}
+
+	return LOWEST
 }
