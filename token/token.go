@@ -8,43 +8,43 @@ type Token struct {
 }
 
 const (
-	ILLIGAL = "ILLIGAL"
-	EOF     = "EOF"
+	ILLIGAL TokenType = "ILLIGAL"
+	EOF     TokenType = "EOF"
 
 	// literals + identifiers
-	IDENT = "IDENT"
-	INT   = "INT"
+	IDENT TokenType = "IDENT"
+	INT   TokenType = "INT"
 
 	// keywords
-	FUNCTION = "FUNCTION"
-	VAR      = "VAR"
-	RETURN   = "RETURN"
-	IF       = "IF"
-	ELSE     = "ELSE"
-	TRUE     = "TRUE"
-	FALSE    = "FALSE"
+	FUNCTION TokenType = "FUNCTION"
+	VAR      TokenType = "VAR"
+	RETURN   TokenType = "RETURN"
+	IF       TokenType = "IF"
+	ELSE     TokenType = "ELSE"
+	TRUE     TokenType = "TRUE"
+	FALSE    TokenType = "FALSE"
 
 	// operators
-	ASSIGN  = "="
-	PLUS    = "+"
-	MINUS   = "-"
-	MULTP   = "*"
-	SLASH   = "/"
-	BANG    = "!"
-	GT      = ">"
-	LT      = "<"
-	EQUAL   = "=="
-	GTEQUAL = ">="
-	LTEQUAL = "<="
-	NOTEQU  = "!="
+	ASSIGN  TokenType = "="
+	PLUS    TokenType = "+"
+	MINUS   TokenType = "-"
+	MULTP   TokenType = "*"
+	SLASH   TokenType = "/"
+	BANG    TokenType = "!"
+	GT      TokenType = ">"
+	LT      TokenType = "<"
+	EQUAL   TokenType = "=="
+	GTEQUAL TokenType = ">="
+	LTEQUAL TokenType = "<="
+	NOTEQU  TokenType = "!="
 
 	// delimiters
-	COMMA     = ","
-	SEMICOLON = ";"
-	LPARENT   = "("
-	RPARENT   = ")"
-	LBRACE    = "{"
-	RBRACE    = "}"
+	COMMA     TokenType = ","
+	SEMICOLON TokenType = ";"
+	LPARENT   TokenType = "("
+	RPARENT   TokenType = ")"
+	LBRACE    TokenType = "{"
+	RBRACE    TokenType = "}"
 )
 
 var keywords = map[string]TokenType{

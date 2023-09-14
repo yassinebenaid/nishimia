@@ -28,7 +28,3 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 
 	return leftExp
 }
-
-func (p *Parser) parseIdentifier() ast.Expression {
-	return &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
-}
