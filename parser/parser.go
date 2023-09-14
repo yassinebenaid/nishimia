@@ -8,6 +8,18 @@ import (
 	"github.com/yassinebenaid/nishimia/token"
 )
 
+const (
+	_ = iota
+	LOWEST
+	EQUALS      // ==
+	LESSGREATER // < OR >
+	SUM         //+
+	PRODUCT     // -
+	PREFIX      // !X or -X
+	CALL        // myFunction(x)
+
+)
+
 type Parser struct {
 	lex *lexer.Lexer // the lexer to gain tokens
 
@@ -27,6 +39,9 @@ type (
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{lex: l}
+
+	p.prefixPareseFns = make(map[token.TokenType]prefixParseFn)
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
 
 	p.nextToken()
 	p.nextToken()
@@ -59,7 +74,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
-		return nil
+		return p.parseExpressionStatement()
 	}
 }
 
