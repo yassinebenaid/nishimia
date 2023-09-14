@@ -354,3 +354,24 @@ func testIntegerLiteral(t *testing.T, exp ast.Expression, expected int64) bool {
 
 	return true
 }
+
+func testIdentifierLiteral(t *testing.T, exp ast.Expression, expected string) bool {
+	integ, ok := exp.(*ast.Identifier)
+
+	if !ok {
+		t.Errorf("expected expression of type Identifier, got %T", exp)
+		return false
+	}
+
+	if integ.Value != expected {
+		t.Errorf("failed to assert that the expected value of %s is equal to %s", expected, integ.Value)
+		return false
+	}
+
+	if integ.TokenLiteral() != expected {
+		t.Errorf("failed to assert that the expected token literal of %s is equal to %s", expected, integ.TokenLiteral())
+		return false
+	}
+
+	return true
+}
