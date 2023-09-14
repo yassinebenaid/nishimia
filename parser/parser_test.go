@@ -5,6 +5,7 @@ import (
 
 	"github.com/yassinebenaid/nishimia/ast"
 	"github.com/yassinebenaid/nishimia/lexer"
+	"github.com/yassinebenaid/nishimia/token"
 )
 
 func TestVarStatement(t *testing.T) {
@@ -102,6 +103,28 @@ func TestReturnStatementParser(t *testing.T) {
 		if ret.TokenLiteral() != "return" {
 			t.Errorf("statement.Token.Literal is not 'return', got %s", ret.TokenLiteral())
 		}
+	}
+}
+
+func TestStringOnProgram(t *testing.T) {
+	proram := ast.Program{
+		Statements: []ast.Statement{
+			&ast.VarStatement{
+				Token: token.Token{Type: token.VAR, Literal: "var"},
+				Name: &ast.Identifier{
+					Token: token.Token{Type: token.IDENT, Literal: "year"},
+					Value: "year",
+				},
+				Value: &ast.Identifier{
+					Token: token.Token{Type: token.IDENT, Literal: "2023"},
+					Value: "2023",
+				},
+			},
+		},
+	}
+
+	if proram.String() != "var year = 2023;" {
+		t.Fatalf("expected program string to be %s, got %s", "var year = 2023;", proram.String())
 	}
 }
 
