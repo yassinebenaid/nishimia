@@ -25,3 +25,16 @@ func (p *Parser) parseInteger() ast.Expression {
 
 	return exp
 }
+
+func (p *Parser) parsePrefixExpressions() ast.Expression {
+	exp := &ast.PrefixExpression{
+		Token:    p.currentToken,
+		Operator: p.currentToken.Literal,
+	}
+
+	p.nextToken()
+
+	exp.Right = p.parseExpression(PREFIX)
+
+	return exp
+}

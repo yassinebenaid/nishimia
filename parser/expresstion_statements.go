@@ -21,6 +21,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := p.prefixPareseFns[p.currentToken.Type]
 
 	if prefix == nil {
+		p.noPrefixParseFnError(p.currentToken.Type)
 		return nil
 	}
 

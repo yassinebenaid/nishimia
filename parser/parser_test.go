@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/yassinebenaid/nishimia/ast"
@@ -178,7 +179,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	integ, ok := stat.Expression.(*ast.IntegerLiteral)
 
 	if !ok {
-		t.Fatalf("statement type is incorrect, expected IntegerLiteral, got=%T", program.Statements[0])
+		t.Fatalf("statement type is incorrect, expected IntegerLiteral, got=%T", integ)
 	}
 
 	if integ.Value != 5 {
@@ -189,6 +190,47 @@ func TestIntegerLiteralExpression(t *testing.T) {
 		t.Fatalf("expected identifir value to be [foobar] , got=%v", integ.TokenLiteral())
 	}
 }
+
+func TestParsingPrefixExpressions(t *testing.T) {
+	prefixTests := []struct {
+		input        string
+		operator     string
+		integerValue int64
+	}{
+		{"!5;", "!", 5},
+		{"-5;", "-", 5},
+	}
+
+	for _, tt := range prefixTests {
+		l := lexer.New(tt.input)
+		par := New(l)
+		program := par.ParseProgram()
+		checkParserErrors(t, par)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("expected 1 statement, got=%d", len(program.Statements))
+		}
+
+		stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("statement type is incorrect, expected ExpressionStatement, got=%T", program.Statements[0])
+		}
+
+		pref, ok := stat.Expression.(*ast.PrefixExpression)
+		if !ok {
+			t.Fatalf("statement type is incorrect, expected PrefixExpression, got=%T", pref)
+		}
+
+		if pref.Operator != tt.operator {
+			t.Fatalf("failed to assert that operator %s is equal to %s", tt.operator, pref.Operator)
+		}
+
+		if !testIntegerLiteral(t, pref.Right, tt.integerValue) {
+			t.Fatalf("failed to assert that operator %s is equal to %s", tt.operator, pref.Operator)
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
@@ -201,4 +243,25 @@ func checkParserErrors(t *testing.T, p *Parser) {
 	}
 
 	t.FailNow()
+}
+
+func testIntegerLiteral(t *testing.T, exp ast.Expression, expected int64) bool {
+	integ, ok := exp.(*ast.IntegerLiteral)
+
+	if !ok {
+		t.Errorf("expected expression of type IntegerLiteral, got %T", exp)
+		return false
+	}
+
+	if integ.Value != expected {
+		t.Errorf("failed to assert that the expected value of %d is equal to %d", expected, integ.Value)
+		return false
+	}
+
+	if integ.TokenLiteral() != fmt.Sprintf("%d", expected) {
+		t.Errorf("failed to assert that the expected token literal of %s is equal to %s", fmt.Sprintf("%d", expected), integ.TokenLiteral())
+		return false
+	}
+
+	return true
 }
