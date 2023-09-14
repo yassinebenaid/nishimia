@@ -15,7 +15,15 @@ type Parser struct {
 	peekToken    token.Token // refers to the next token after currentToken
 
 	errors []string // holds all parsing errors
+
+	prefixPareseFns map[token.TokenType]prefixParseFn
+	infixPareseFns  map[token.TokenType]infixParseFn
 }
+
+type (
+	prefixParseFn func() ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
+)
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{lex: l}
@@ -83,4 +91,12 @@ func (p *Parser) peekError(t token.TokenType) {
 		p.errors,
 		fmt.Sprintf(`unexpected token  "%s" , expected "%s"`, p.peekToken.Literal, t),
 	)
+}
+
+func (p *Parser) registerPrefix(t token.TokenType, fn prefixParseFn) {
+	p.prefixPareseFns[t] = fn
+}
+
+func (p *Parser) registerInfix(t token.TokenType, fn infixParseFn) {
+	p.infixPareseFns[t] = fn
 }

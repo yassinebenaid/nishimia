@@ -128,6 +128,35 @@ func TestStringOnProgram(t *testing.T) {
 	}
 }
 
+func TestIdentifierExpression(t *testing.T) {
+	input := `foobar;`
+	lex := lexer.New(input)
+	par := New(lex)
+	program := par.ParseProgram()
+
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected 1 statement, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("statement type is incorrect, expected ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	ident, ok := stat.Expression.(*ast.Identifier)
+
+	if ident.Value != "foobar" {
+		t.Fatalf("expected identifir value to be [foobar] , got=%v", ident.Value)
+	}
+
+	if ident.TokenLiteral() != "foobar" {
+		t.Fatalf("expected identifir value to be [foobar] , got=%v", ident.TokenLiteral())
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
