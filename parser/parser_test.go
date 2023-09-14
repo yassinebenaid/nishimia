@@ -231,6 +231,59 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 }
 
+func TestInfixExpressions(t *testing.T) {
+	infixTests := []struct {
+		input      string
+		leftValue  int64
+		operator   string
+		rightValue int64
+	}{
+		{"5 + 5;", 5, "+", 5},
+		{"5 - 5;", 5, "-", 5},
+		{"5 * 5;", 5, "*", 5},
+		{"5 / 5;", 5, "/", 5},
+		{"5 > 5;", 5, ">", 5},
+		{"5 < 5;", 5, "<", 5},
+		{"5 == 5;", 5, "==", 5},
+		{"5 != 5;", 5, "!=", 5},
+		{"5 >= 5;", 5, ">=", 5},
+		{"5 <= 5;", 5, "<=", 5},
+	}
+
+	for _, tt := range infixTests {
+		l := lexer.New(tt.input)
+		par := New(l)
+		program := par.ParseProgram()
+		checkParserErrors(t, par)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("expected 1 statement, got=%d", len(program.Statements))
+		}
+
+		stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("statement type is incorrect, expected ExpressionStatement, got=%T", program.Statements[0])
+		}
+
+		pref, ok := stat.Expression.(*ast.InfixExpression)
+		if !ok {
+			t.Fatalf("statement type is incorrect, expected InfixExpression, got=%T", pref)
+		}
+
+		if !testIntegerLiteral(t, pref.Left, tt.leftValue) {
+			return
+		}
+
+		if pref.Operator != tt.operator {
+			t.Fatalf("failed to assert that operator %s is equal to %s", tt.operator, pref.Operator)
+		}
+
+		if !testIntegerLiteral(t, pref.Right, tt.leftValue) {
+			return
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
