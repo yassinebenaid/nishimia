@@ -5,10 +5,19 @@ import (
 	"strconv"
 
 	"github.com/yassinebenaid/nishimia/ast"
+	"github.com/yassinebenaid/nishimia/token"
 )
 
 func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+}
+
+func (p *Parser) parseBoolean() ast.Expression {
+	if p.currentTokenIs(token.TRUE) {
+		return &ast.BooleanLiteral{Token: p.currentToken, Value: true}
+	}
+
+	return &ast.BooleanLiteral{Token: p.currentToken, Value: false}
 }
 
 func (p *Parser) parseInteger() ast.Expression {
