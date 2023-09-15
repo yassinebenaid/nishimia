@@ -342,7 +342,7 @@ func TestIfExpressionParsing(t *testing.T) {
 	program := par.ParseProgram()
 	checkParserErrors(t, par)
 
-	if len(program.Statements) != 0 {
+	if len(program.Statements) != 1 {
 		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
 	}
 
@@ -360,7 +360,7 @@ func TestIfExpressionParsing(t *testing.T) {
 		return
 	}
 
-	if len(ifelse.Consequence.Statements) != 0 {
+	if len(ifelse.Consequence.Statements) != 1 {
 		t.Fatalf("expected ifelse.Consequence.Statements count to be 1, got=%d", len(ifelse.Consequence.Statements))
 	}
 
@@ -386,7 +386,7 @@ func TestIfElseExpressionParsing(t *testing.T) {
 	program := par.ParseProgram()
 	checkParserErrors(t, par)
 
-	if len(program.Statements) != 0 {
+	if len(program.Statements) != 1 {
 		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
 	}
 
@@ -404,7 +404,7 @@ func TestIfElseExpressionParsing(t *testing.T) {
 		return
 	}
 
-	if len(ifelse.Consequence.Statements) != 0 {
+	if len(ifelse.Consequence.Statements) != 1 {
 		t.Fatalf("expected ifelse.Consequence.Statements count to be 1, got=%d", len(ifelse.Consequence.Statements))
 	}
 
@@ -417,7 +417,7 @@ func TestIfElseExpressionParsing(t *testing.T) {
 		return
 	}
 
-	if len(ifelse.Alternative.Statements) != 0 {
+	if len(ifelse.Alternative.Statements) != 1 {
 		t.Fatalf("expected ifelse.Alternative.Statements count to be 1, got=%d", len(ifelse.Alternative.Statements))
 	}
 
