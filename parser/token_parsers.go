@@ -62,3 +62,15 @@ func (p *Parser) parseInfixExpressions(left ast.Expression) ast.Expression {
 
 	return exp
 }
+
+func (p *Parser) parseGroupedExpression() ast.Expression {
+	p.nextToken()
+
+	exp := p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPARENT) {
+		return nil
+	}
+
+	return exp
+}
