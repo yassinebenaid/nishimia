@@ -333,6 +333,104 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		}
 	}
 }
+
+func TestIfExpressionParsing(t *testing.T) {
+	input := `if x < y {x}`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 0 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	ifelse, ok := stat.Expression.(*ast.IfElseExpression)
+	if !ok {
+		t.Fatalf("expected statement type of IfElseExpression, got=%T", stat)
+	}
+
+	if !testInfixExpression(t, ifelse.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(ifelse.Consequence.Statements) != 0 {
+		t.Fatalf("expected ifelse.Consequence.Statements count to be 1, got=%d", len(ifelse.Consequence.Statements))
+	}
+
+	seque, ok := ifelse.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected sequence first statement type of ExpressionStatement, got=%T", ifelse.Consequence.Statements[0])
+	}
+
+	if !testIdentifierLiteral(t, seque.Expression, "x") {
+		return
+	}
+
+	if ifelse.Alternative != nil {
+		t.Fatalf("ifels.Alternative is not nil, got %+v", ifelse.Alternative)
+	}
+}
+
+func TestIfElseExpressionParsing(t *testing.T) {
+	input := `if x < y { x } else { y }`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 0 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	ifelse, ok := stat.Expression.(*ast.IfElseExpression)
+	if !ok {
+		t.Fatalf("expected statement type of IfElseExpression, got=%T", stat)
+	}
+
+	if !testInfixExpression(t, ifelse.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(ifelse.Consequence.Statements) != 0 {
+		t.Fatalf("expected ifelse.Consequence.Statements count to be 1, got=%d", len(ifelse.Consequence.Statements))
+	}
+
+	seque, ok := ifelse.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected sequence first statement type of ExpressionStatement, got=%T", ifelse.Consequence.Statements[0])
+	}
+
+	if !testIdentifierLiteral(t, seque.Expression, "x") {
+		return
+	}
+
+	if len(ifelse.Alternative.Statements) != 0 {
+		t.Fatalf("expected ifelse.Alternative.Statements count to be 1, got=%d", len(ifelse.Alternative.Statements))
+	}
+
+	alt, ok := ifelse.Alternative.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected sequence first statement type of ExpressionStatement, got=%T", ifelse.Alternative.Statements[0])
+	}
+
+	if !testIdentifierLiteral(t, alt.Expression, "y") {
+		return
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
