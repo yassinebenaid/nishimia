@@ -431,6 +431,170 @@ func TestIfElseExpressionParsing(t *testing.T) {
 	}
 }
 
+func TestFunctionLiteralWithoutParamsParsing(t *testing.T) {
+	input := `
+		func(){
+			x + y;
+		}`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	funct, ok := stat.Expression.(*ast.FunctionLiteral)
+	if !ok {
+		t.Fatalf("expected statement type of FunctionLiteral, got=%T", stat)
+	}
+
+	if len(funct.Params) != 0 {
+		t.Fatalf("expected arguments count to be 0, got=%d", len(funct.Params))
+	}
+
+	if len(funct.Body.Statements) != 1 {
+		t.Fatalf("expected funct.Body.Statements count to be 1, got=%d", len(funct.Body.Statements))
+	}
+
+	// ret, ok := funct.Block.Statements[0].(*ast.ReturnStatement)
+	// if !ok {
+	// 	t.Fatalf("expected first statement type of ReturnStatement, got=%T", funct.Block.Statements[0])
+	// }
+
+	// if !testInfixExpression(t, ret.Return, "x", "+", "y") {
+	// 	return
+	// }
+
+	ret, ok := funct.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected first statement type of ExpressionStatement, got=%T", funct.Body.Statements[0])
+	}
+
+	if !testInfixExpression(t, ret.Expression, "x", "+", "y") {
+		return
+	}
+}
+
+func TestFunctionLiteralWithOneParamParsing(t *testing.T) {
+	input := `
+		func(x){
+			x * 2;
+		}`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	funct, ok := stat.Expression.(*ast.FunctionLiteral)
+	if !ok {
+		t.Fatalf("expected statement type of FunctionLiteral, got=%T", stat)
+	}
+
+	if len(funct.Params) != 1 {
+		t.Fatalf("expected arguments count to be 2, got=%d", len(funct.Params))
+	}
+
+	if !testIdentifierLiteral(t, funct.Params[0], "x") {
+		return
+	}
+
+	if len(funct.Body.Statements) != 1 {
+		t.Fatalf("expected funct.Body.Statements count to be 1, got=%d", len(funct.Body.Statements))
+	}
+
+	// ret, ok := funct.Block.Statements[0].(*ast.ReturnStatement)
+	// if !ok {
+	// 	t.Fatalf("expected first statement type of ReturnStatement, got=%T", funct.Block.Statements[0])
+	// }
+
+	// if !testInfixExpression(t, ret.Return, "x", "+", "y") {
+	// 	return
+	// }
+
+	ret, ok := funct.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected first statement type of ExpressionStatement, got=%T", funct.Body.Statements[0])
+	}
+
+	if !testInfixExpression(t, ret.Expression, "x", "*", 2) {
+		return
+	}
+}
+
+func TestFunctionLiteralWithManyParamsParsing(t *testing.T) {
+	input := `
+		func(x,y){
+			x + y;
+		}`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	funct, ok := stat.Expression.(*ast.FunctionLiteral)
+	if !ok {
+		t.Fatalf("expected statement type of FunctionLiteral, got=%T", stat)
+	}
+
+	if len(funct.Params) != 2 {
+		t.Fatalf("expected arguments count to be 2, got=%d", len(funct.Params))
+	}
+
+	if !testIdentifierLiteral(t, funct.Params[0], "x") && !testIdentifierLiteral(t, funct.Params[0], "y") {
+		return
+	}
+
+	if len(funct.Body.Statements) != 1 {
+		t.Fatalf("expected funct.Body.Statements count to be 1, got=%d", len(funct.Body.Statements))
+	}
+
+	// ret, ok := funct.Block.Statements[0].(*ast.ReturnStatement)
+	// if !ok {
+	// 	t.Fatalf("expected first statement type of ReturnStatement, got=%T", funct.Block.Statements[0])
+	// }
+
+	// if !testInfixExpression(t, ret.Return, "x", "+", "y") {
+	// 	return
+	// }
+
+	ret, ok := funct.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected first statement type of ExpressionStatement, got=%T", funct.Body.Statements[0])
+	}
+
+	if !testInfixExpression(t, ret.Expression, "x", "+", "y") {
+		return
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return

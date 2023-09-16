@@ -121,3 +121,52 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 
 	return block
 }
+
+func (p *Parser) parseFunctionExpression() ast.Expression {
+	exp := &ast.FunctionLiteral{Token: p.currentToken}
+
+	if !p.expectPeek(token.LPARENT) {
+		return nil
+	}
+
+	exp.Params = p.parseFunctionArguments()
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	exp.Body = p.parseBlockStatement()
+
+	return exp
+}
+
+func (p *Parser) parseFunctionArguments() []*ast.Identifier {
+	var args []*ast.Identifier
+
+	if p.peekTokenIs(token.RPARENT) {
+		p.nextToken()
+		return args
+	}
+
+	p.nextToken()
+
+	args = append(args, &ast.Identifier{
+		Token: p.currentToken,
+		Value: p.currentToken.Literal,
+	})
+
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		args = append(args, &ast.Identifier{
+			Token: p.currentToken,
+			Value: p.currentToken.Literal,
+		})
+	}
+
+	if !p.expectPeek(token.RPARENT) {
+		return nil
+	}
+
+	return args
+}

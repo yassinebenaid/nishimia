@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/yassinebenaid/nishimia/token"
 )
@@ -251,6 +252,34 @@ func (b *BlockStatement) String() string {
 	}
 
 	out.WriteString("}")
+
+	return out.String()
+}
+
+// This node represents the function literal,
+//
+//	fn(){}
+type FunctionLiteral struct {
+	Token  token.Token
+	Params []*Identifier
+	Body   *BlockStatement
+}
+
+func (fn *FunctionLiteral) expressionNode()      {}
+func (fn *FunctionLiteral) TokenLiteral() string { return fn.Token.Literal }
+func (fn *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("fn(")
+
+	var args []string
+	for _, arg := range fn.Params {
+		args = append(args, arg.String())
+	}
+
+	out.WriteString(strings.Join(args, ", "))
+	out.WriteString(")")
+	out.WriteString(fn.Body.String())
 
 	return out.String()
 }
