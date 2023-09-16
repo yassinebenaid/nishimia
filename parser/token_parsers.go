@@ -8,6 +8,40 @@ import (
 	"github.com/yassinebenaid/nishimia/token"
 )
 
+func (p *Parser) parseVarBindingStatement() ast.Statement {
+	stat := &ast.VarStatement{Token: p.currentToken}
+
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
+
+	stat.Name = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+
+	if !p.expectPeek(token.ASSIGN) {
+		return nil
+	}
+
+	// TODO: parse expression here
+	for !p.currentTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return stat
+}
+
+func (p *Parser) parseReturnStatement() ast.Statement {
+	stat := &ast.ReturnStatement{Token: p.currentToken}
+
+	p.nextToken()
+
+	// TODO : parse experession here .
+	for !p.currentTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return stat
+}
+
 func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 }
@@ -129,7 +163,7 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 		return nil
 	}
 
-	exp.Params = p.parseFunctionArguments()
+	exp.Params = p.parseFunctionParameters()
 
 	if !p.expectPeek(token.LBRACE) {
 		return nil
@@ -140,7 +174,7 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	return exp
 }
 
-func (p *Parser) parseFunctionArguments() []*ast.Identifier {
+func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 	var args []*ast.Identifier
 
 	if p.peekTokenIs(token.RPARENT) {
@@ -162,6 +196,38 @@ func (p *Parser) parseFunctionArguments() []*ast.Identifier {
 			Token: p.currentToken,
 			Value: p.currentToken.Literal,
 		})
+	}
+
+	if !p.expectPeek(token.RPARENT) {
+		return nil
+	}
+
+	return args
+}
+
+func (p *Parser) parseFunctionCallExpression(function ast.Expression) ast.Expression {
+	fnExp := &ast.CallExpression{Token: p.currentToken, Function: function}
+	fnExp.Arguments = p.parseCallArguments()
+
+	return fnExp
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	var args []ast.Expression
+
+	if p.peekTokenIs(token.RPARENT) {
+		p.nextToken()
+		return args
+	}
+
+	p.nextToken()
+
+	args = append(args, p.parseExpression(LOWEST))
+
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		args = append(args, p.parseExpression(LOWEST))
 	}
 
 	if !p.expectPeek(token.RPARENT) {

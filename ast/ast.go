@@ -272,14 +272,42 @@ func (fn *FunctionLiteral) String() string {
 
 	out.WriteString("fn(")
 
+	var params []string
+	for _, param := range fn.Params {
+		params = append(params, param.String())
+	}
+
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(")")
+	out.WriteString(fn.Body.String())
+
+	return out.String()
+}
+
+// This node represents the function calls ,.
+//
+//	functionName() // using identifier
+//	fn(){}() //using function literal
+type CallExpression struct {
+	Token     token.Token
+	Function  Expression
+	Arguments []Expression
+}
+
+func (c *CallExpression) expressionNode()      {}
+func (c *CallExpression) TokenLiteral() string { return c.Token.Literal }
+func (c *CallExpression) String() string {
+	var out bytes.Buffer
+
 	var args []string
-	for _, arg := range fn.Params {
+	for _, arg := range c.Arguments {
 		args = append(args, arg.String())
 	}
 
+	out.WriteString(c.Function.String())
+	out.WriteString("(")
 	out.WriteString(strings.Join(args, ", "))
 	out.WriteString(")")
-	out.WriteString(fn.Body.String())
 
 	return out.String()
 }

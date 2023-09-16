@@ -318,6 +318,9 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{"(a + b) * 2", "((a + b) * 2)"},
 		{"(a + b) / 2", "((a + b) / 2)"},
 		{"!(false == true)", "(!(false == true))"},
+
+		{"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))"},
+		{"add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g))"},
 	}
 
 	for _, tt := range tests {
@@ -592,6 +595,86 @@ func TestFunctionLiteralWithManyParamsParsing(t *testing.T) {
 
 	if !testInfixExpression(t, ret.Expression, "x", "+", "y") {
 		return
+	}
+}
+
+func TestFunctionCallExpressionParsing(t *testing.T) {
+	input := `add(2 ,4 + y, 4 * 2);`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	funct, ok := stat.Expression.(*ast.CallExpression)
+	if !ok {
+		t.Fatalf("expected statement type of CallExpression, got=%T", stat)
+	}
+
+	if !testLiteralExpression(t, funct.Function, "add") {
+		return
+	}
+
+	if len(funct.Arguments) != 3 {
+		t.Fatalf("expected arguments count to be 2, got=%d", len(funct.Arguments))
+	}
+
+	testLiteralExpression(t, funct.Arguments[0], 2)
+	testInfixExpression(t, funct.Arguments[1], 4, "+", "y")
+	testInfixExpression(t, funct.Arguments[2], 4, "*", 2)
+
+}
+
+func TestFunctionCallArgumentParsing(t *testing.T) {
+	input := `add(-2 ,4 + y, 4 * -2 / -4, !true);`
+
+	tests := []string{
+		"(-2)",
+		"(4 + y)",
+		"((4 * (-2)) / (-4))",
+		"(!true)",
+	}
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	funct, ok := stat.Expression.(*ast.CallExpression)
+	if !ok {
+		t.Fatalf("expected statement type of CallExpression, got=%T", stat)
+	}
+
+	if !testLiteralExpression(t, funct.Function, "add") {
+		return
+	}
+
+	if len(funct.Arguments) != 4 {
+		t.Fatalf("expected arguments count to be 2, got=%d", len(funct.Arguments))
+	}
+
+	for i, test := range tests {
+		if test != funct.Arguments[i].String() {
+			t.Fatalf("expected argument to be %s, got %s", test, funct.Arguments[i].String())
+		}
 	}
 }
 
