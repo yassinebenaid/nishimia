@@ -10,37 +10,35 @@ import (
 )
 
 func TestVarStatement(t *testing.T) {
-	input := `
-	var year = 2023;
-	var month = 9;
-	var day = 12;
-	`
-	lex := lexer.New(input)
-	par := New(lex)
-
-	program := par.ParseProgram()
-	checkParserErrors(t, par)
-
-	if program == nil {
-		t.Fatal("ParseProgram() returned nil !")
-	}
-
-	if len(program.Statements) != 3 {
-		t.Fatalf("failed to parse program, expected statements count of 3 , got : %d", len(program.Statements))
-	}
-
-	cases := []struct {
+	tests := []struct {
+		input              string
 		expectedIdentifier string
+		expectedValue      any
 	}{
-		{"year"},
-		{"month"},
-		{"day"},
+		{"var x = 5;", "x", 5},
+		{"var y = true;", "y", true},
+		{"var foobar = y;", "foobar", "y"},
 	}
 
-	for i, cas := range cases {
-		stat := program.Statements[i]
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
 
-		if !testVarStatement(t, stat, cas.expectedIdentifier) {
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain 1 statements. got=%d",
+				len(program.Statements))
+		}
+
+		stmt := program.Statements[0]
+		if !testVarStatement(t, stmt, tt.expectedIdentifier) {
+			return
+		}
+
+		val := stmt.(*ast.VarStatement).Value
+
+		if !testLiteralExpression(t, val, tt.expectedValue) {
 			return
 		}
 	}
@@ -73,38 +71,45 @@ func testVarStatement(t *testing.T, s ast.Statement, name string) bool {
 }
 
 func TestReturnStatementParser(t *testing.T) {
-	input := `
-	return 5;
-	return 5 == 7;
-	return add(4,5);
-	`
-
-	lex := lexer.New(input)
-	par := New(lex)
-
-	program := par.ParseProgram()
-	checkParserErrors(t, par)
-
-	if len(program.Statements) != 3 {
-		t.Fatalf("expected 3 statemnts, got %d", len(program.Statements))
+	tests := []struct {
+		input              string
+		expectedExpression string
+	}{
+		{`return 5;`, "5"},
+		{`return 5 * 5;`, "(5 * 5)"},
+		{`return 5 == 7;`, "(5 == 7)"},
+		{`return add(4,5);`, "add(4, 5)"},
+		{`return add(4,min(5,6));`, "add(4, min(5, 6))"},
 	}
 
-	for _, stat := range program.Statements {
-		ret, ok := stat.(*ast.ReturnStatement)
+	for _, test := range tests {
+		lex := lexer.New(test.input)
+		par := New(lex)
+		program := par.ParseProgram()
+		checkParserErrors(t, par)
 
+		if len(program.Statements) != 1 {
+			t.Fatalf("expected 1 statemnts, got %d", len(program.Statements))
+		}
+
+		ret, ok := program.Statements[0].(*ast.ReturnStatement)
 		if !ok {
-			t.Errorf("the statement type is not ast.ReturnStatement, got %T", stat)
-			continue
+			t.Fatalf("the program.Statements[0] type is not ast.ReturnStatement, got %T", program.Statements[0])
 		}
 
 		if ret.Token.Literal != "return" {
-			t.Errorf("statement.Token.Literal is not 'return', got %s", ret.Token.Literal)
+			t.Fatalf("statement.Token.Literal is not 'return', got %s", ret.Token.Literal)
 		}
 
 		if ret.TokenLiteral() != "return" {
-			t.Errorf("statement.Token.Literal is not 'return', got %s", ret.TokenLiteral())
+			t.Fatalf("statement.Token.Literal is not 'return', got %s", ret.TokenLiteral())
+		}
+
+		if test.expectedExpression != ret.Return.String() {
+			t.Fatalf("expected expression to be %s , got %s", test.expectedExpression, ret.Return.String())
 		}
 	}
+
 }
 
 func TestStringOnProgram(t *testing.T) {

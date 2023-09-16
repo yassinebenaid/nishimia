@@ -21,9 +21,12 @@ func (p *Parser) parseVarBindingStatement() ast.Statement {
 		return nil
 	}
 
-	// TODO: parse expression here
-	for !p.currentTokenIs(token.SEMICOLON) {
-		p.nextToken()
+	p.nextToken()
+
+	stat.Value = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.SEMICOLON) {
+		return nil
 	}
 
 	return stat
@@ -34,9 +37,10 @@ func (p *Parser) parseReturnStatement() ast.Statement {
 
 	p.nextToken()
 
-	// TODO : parse experession here .
-	for !p.currentTokenIs(token.SEMICOLON) {
-		p.nextToken()
+	stat.Return = p.parseExpression(LOWEST)
+
+	for !p.expectPeek(token.SEMICOLON) {
+		return nil
 	}
 
 	return stat
