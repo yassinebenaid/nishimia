@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/yassinebenaid/nishimia/eval"
 	"github.com/yassinebenaid/nishimia/lexer"
 	"github.com/yassinebenaid/nishimia/parser"
 )
@@ -38,7 +39,7 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		io.WriteString(out, "\n")
-		io.WriteString(out, program.String())
+		io.WriteString(out, eval.Eval(program).Inspect())
 		io.WriteString(out, "\n")
 
 		fmt.Print(PROMPT)
