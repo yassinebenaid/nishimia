@@ -3,16 +3,16 @@ package repl
 import (
 	"bufio"
 	"fmt"
-	"os"
+	"io"
 
 	"github.com/yassinebenaid/nishimia/lexer"
-	"github.com/yassinebenaid/nishimia/token"
+	"github.com/yassinebenaid/nishimia/parser"
 )
 
 const PROMPT = ">>> "
 
-func Start() {
-	scanner := bufio.NewScanner(os.Stdin)
+func Start(in io.Reader, out io.Writer) {
+	scanner := bufio.NewScanner(in)
 
 	fmt.Print(PROMPT)
 
@@ -23,10 +23,23 @@ func Start() {
 			break
 		}
 		lex := lexer.New(line)
+		par := parser.New(lex)
+		program := par.ParseProgram()
 
-		for tok := lex.NextToken(); tok.Type != token.EOF; tok = lex.NextToken() {
-			fmt.Printf("%+s\n", tok)
+		if errs := par.Errors(); len(errs) > 0 {
+			io.WriteString(out, "Parsing failed : \n")
+
+			for i, err := range errs {
+				io.WriteString(out, fmt.Sprintf("\t#%d %s\n", i, err))
+			}
+
+			io.WriteString(out, PROMPT)
+			continue
 		}
+
+		io.WriteString(out, "\n")
+		io.WriteString(out, program.String())
+		io.WriteString(out, "\n")
 
 		fmt.Print(PROMPT)
 	}
