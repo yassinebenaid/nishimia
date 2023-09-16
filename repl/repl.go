@@ -38,8 +38,13 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		io.WriteString(out, "\n")
-		io.WriteString(out, eval.Eval(program).Inspect())
+		evaluated := eval.Eval(program)
+
+		if evaluated != nil {
+			io.WriteString(out, "\n")
+			io.WriteString(out, evaluated.Inspect())
+		}
+
 		io.WriteString(out, "\n")
 
 		fmt.Print(PROMPT)
