@@ -97,42 +97,48 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 }
 
 func evalIntegerInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
 	switch operator {
 	case "+":
-		return &object.Integer{Value: left.(*object.Integer).Value + right.(*object.Integer).Value}
+		return &object.Integer{Value: leftValue + rightValue}
 	case "-":
-		return &object.Integer{Value: left.(*object.Integer).Value - right.(*object.Integer).Value}
+		return &object.Integer{Value: leftValue - rightValue}
 	case "*":
-		return &object.Integer{Value: left.(*object.Integer).Value * right.(*object.Integer).Value}
+		return &object.Integer{Value: leftValue * rightValue}
 	case "/":
-		return &object.Integer{Value: left.(*object.Integer).Value / right.(*object.Integer).Value}
+		return &object.Integer{Value: leftValue / rightValue}
 	case "<":
-		return &object.Boolean{Value: left.(*object.Integer).Value < right.(*object.Integer).Value}
+		return &object.Boolean{Value: leftValue < rightValue}
 	case ">":
-		return &object.Boolean{Value: left.(*object.Integer).Value > right.(*object.Integer).Value}
+		return &object.Boolean{Value: leftValue > rightValue}
 	case ">=":
-		return &object.Boolean{Value: left.(*object.Integer).Value >= right.(*object.Integer).Value}
+		return &object.Boolean{Value: leftValue >= rightValue}
 	case "<=":
-		return &object.Boolean{Value: left.(*object.Integer).Value <= right.(*object.Integer).Value}
+		return &object.Boolean{Value: leftValue <= rightValue}
 	case "!=":
-		return &object.Boolean{Value: left.(*object.Integer).Value != right.(*object.Integer).Value}
+		return &object.Boolean{Value: leftValue != rightValue}
 	case "==":
-		return &object.Boolean{Value: left.(*object.Integer).Value == right.(*object.Integer).Value}
+		return &object.Boolean{Value: leftValue == rightValue}
 	default:
 		return NULL // TODO : throw error
 	}
 }
 
 func evalBooleanInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+	leftValue := left.(*object.Boolean).Value
+	rightValue := right.(*object.Boolean).Value
+
 	switch operator {
 	case "&&":
-		return &object.Boolean{Value: left.(*object.Boolean).Value && right.(*object.Boolean).Value}
+		return &object.Boolean{Value: leftValue && rightValue}
 	case "||":
-		return &object.Boolean{Value: left.(*object.Boolean).Value || right.(*object.Boolean).Value}
+		return &object.Boolean{Value: leftValue || rightValue}
 	case "==":
-		return &object.Boolean{Value: left.(*object.Boolean).Value == right.(*object.Boolean).Value}
+		return &object.Boolean{Value: leftValue == rightValue}
 	case "!=":
-		return &object.Boolean{Value: left.(*object.Boolean).Value != right.(*object.Boolean).Value}
+		return &object.Boolean{Value: leftValue != rightValue}
 	default:
 		return NULL // TODO : throw error
 	}
