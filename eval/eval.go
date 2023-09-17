@@ -115,14 +115,22 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 	case NULL:
 		return TRUE
 	default:
-		return FALSE // TODO: register evaluation error here
+		return newError(
+			"invalid operation: !%s (operator \"!\" not defined on %s)",
+			right.Inspect(),
+			right.Type(),
+		)
 	}
 }
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 
 	if right.Type() != object.INTEGER_OBJ {
-		return NULL // TODO: register error here
+		return newError(
+			"invalid operation: -%s (operator \"-\" not defined on %s)",
+			right.Inspect(),
+			right.Type(),
+		)
 	}
 
 	value := right.(*object.Integer).Value
@@ -133,7 +141,11 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 func evalPlusPrefixOperatorExpression(right object.Object) object.Object {
 
 	if right.Type() != object.INTEGER_OBJ {
-		return NULL // TODO: register error here
+		return newError(
+			"invalid operation: +%s (operator \"+\" not defined on %s)",
+			right.Inspect(),
+			right.Type(),
+		)
 	}
 
 	value := right.(*object.Integer).Value

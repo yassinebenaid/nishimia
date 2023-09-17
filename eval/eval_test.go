@@ -161,7 +161,10 @@ func TestErrorHandling(t *testing.T) {
 	}{
 		{"5 + true;", "invalid operation: 5 + true (mismatched types INTEGER and BOOLEAN)"},
 		{"5 + true; 5;", "invalid operation: 5 + true (mismatched types INTEGER and BOOLEAN)"},
-		// {"-true", "invalid operation: -BOOLEAN (operator - not defined on BOOLEAN)"},
+		{"-true", "invalid operation: -true (operator \"-\" not defined on BOOLEAN)"},
+		{"+false", "invalid operation: +false (operator \"+\" not defined on BOOLEAN)"},
+		{"!1", "invalid operation: !1 (operator \"!\" not defined on INTEGER)"},
+		{"!(1*5)", "invalid operation: !5 (operator \"!\" not defined on INTEGER)"},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
