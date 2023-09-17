@@ -91,7 +91,6 @@ func TestIfElseExpressions(t *testing.T) {
 	}{
 		{"if (true) { +10 }", 10},
 		{"if (false) { 10 }", nil},
-		{"if (1) { 10 }", nil},
 		{"if (1 < 2) { 10 }", 10},
 		{"if (1 > 2) { 10 }", nil},
 		{"if (1 > 2) { 10 } else { 20 }", 20},
@@ -100,10 +99,6 @@ func TestIfElseExpressions(t *testing.T) {
 		{"if (1 >= 2) { 10 } else { 20 }", 20},
 		{"if (true && false) { 10 } else { 20 }", 20},
 		{"if (false || true) { 10 } else { 20 }", 10},
-		{"if (1 && true) { 10 } else { 20 }", nil},
-		{"if (1 || true) { 10 } else { 20 }", nil},
-		{"if (1 && false) { 10 } else { 20 }", nil},
-		{"if (1 || false) { 10 } else { 20 }", nil},
 	}
 
 	for _, tt := range tests {
@@ -122,7 +117,7 @@ func TestReturnStatements(t *testing.T) {
 		input    string
 		expected any
 	}{
-		{"return 10;", 10},
+		{"return 10+true;", 10},
 		{"return 10; 9;", 10},
 		{"return 10; 9;", 10},
 		{"return 2 * 5; 9;", 10},
@@ -165,6 +160,8 @@ func TestErrorHandling(t *testing.T) {
 		{"+false", "invalid operation: +false (operator \"+\" not defined on BOOLEAN)"},
 		{"!1", "invalid operation: !1 (operator \"!\" not defined on INTEGER)"},
 		{"!(1*5)", "invalid operation: !5 (operator \"!\" not defined on INTEGER)"},
+		{"if(1+5){5}", "non-boolean value in if-statement , ( got=INTEGER, want=BOOLEAN )"},
+		{"if(1){5}", "non-boolean value in if-statement , ( got=INTEGER, want=BOOLEAN )"},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
@@ -179,6 +176,7 @@ func TestErrorHandling(t *testing.T) {
 				tt.expectedMessage, errObj.Message)
 		}
 	}
+
 }
 
 func testEval(inp string) object.Object {
@@ -221,6 +219,14 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
+		return false
+	}
+	return true
+}
+
+func testErrorObject(t *testing.T, obj object.Object) bool {
+	if _, ok := obj.(*object.Error); !ok {
+		t.Errorf("object is not Error. got=%T (%+v)", obj, obj)
 		return false
 	}
 	return true
