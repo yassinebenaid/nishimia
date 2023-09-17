@@ -39,14 +39,6 @@ func evalStatements(stmts []ast.Statement) object.Object {
 	return result
 }
 
-func nativeBooleanObject(input bool) *object.Boolean {
-	if input {
-		return TRUE
-	}
-
-	return FALSE
-}
-
 func evalPrefixExpression(operator string, right object.Object) object.Object {
 	switch operator {
 	case "!":
@@ -110,17 +102,17 @@ func evalIntegerInfixExpression(operator string, left object.Object, right objec
 	case "/":
 		return &object.Integer{Value: leftValue / rightValue}
 	case "<":
-		return &object.Boolean{Value: leftValue < rightValue}
+		return nativeBooleanObject(leftValue < rightValue)
 	case ">":
-		return &object.Boolean{Value: leftValue > rightValue}
+		return nativeBooleanObject(leftValue > rightValue)
 	case ">=":
-		return &object.Boolean{Value: leftValue >= rightValue}
+		return nativeBooleanObject(leftValue >= rightValue)
 	case "<=":
-		return &object.Boolean{Value: leftValue <= rightValue}
+		return nativeBooleanObject(leftValue <= rightValue)
 	case "!=":
-		return &object.Boolean{Value: leftValue != rightValue}
+		return nativeBooleanObject(leftValue != rightValue)
 	case "==":
-		return &object.Boolean{Value: leftValue == rightValue}
+		return nativeBooleanObject(leftValue == rightValue)
 	default:
 		return NULL // TODO : throw error
 	}
@@ -132,14 +124,22 @@ func evalBooleanInfixExpression(operator string, left object.Object, right objec
 
 	switch operator {
 	case "&&":
-		return &object.Boolean{Value: leftValue && rightValue}
+		return nativeBooleanObject(leftValue && rightValue)
 	case "||":
-		return &object.Boolean{Value: leftValue || rightValue}
+		return nativeBooleanObject(leftValue || rightValue)
 	case "==":
-		return &object.Boolean{Value: leftValue == rightValue}
+		return nativeBooleanObject(leftValue == rightValue)
 	case "!=":
-		return &object.Boolean{Value: leftValue != rightValue}
+		return nativeBooleanObject(leftValue != rightValue)
 	default:
 		return NULL // TODO : throw error
 	}
+}
+
+func nativeBooleanObject(input bool) *object.Boolean {
+	if input {
+		return TRUE
+	}
+
+	return FALSE
 }
