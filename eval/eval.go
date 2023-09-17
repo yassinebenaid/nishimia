@@ -25,6 +25,10 @@ func Eval(node ast.Node) object.Object {
 		return evalPrefixExpression(v.Operator, Eval(v.Right))
 	case *ast.InfixExpression:
 		return evalInfixExpression(v.Operator, Eval(v.Left), Eval(v.Right))
+	case *ast.IfElseExpression:
+		return evalConditionalExpression(v)
+	case *ast.BlockStatement:
+		return evalStatements(v.Statements)
 	}
 	return NULL
 }
@@ -134,6 +138,24 @@ func evalBooleanInfixExpression(operator string, left object.Object, right objec
 	default:
 		return NULL // TODO : throw error
 	}
+}
+
+func evalConditionalExpression(node *ast.IfElseExpression) object.Object {
+	cond := Eval(node.Condition)
+
+	if cond.Type() != object.BOOLEAN_OBJ {
+		return NULL // TODO : throw error here
+	}
+
+	if cond.Inspect() == "true" {
+		return Eval(node.Consequence)
+	}
+
+	if node.Alternative != nil {
+		return Eval(node.Alternative)
+	}
+
+	return NULL
 }
 
 func nativeBooleanObject(input bool) *object.Boolean {
