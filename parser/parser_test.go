@@ -299,6 +299,8 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 	}{
 		{"a + b + c + d * 5", "(((a + b) + c) + (d * 5))"},
 		{"-a * b", "((-a) * b)"},
+		{"+a * b", "((+a) * b)"},
+		{"1 + +a * b", "(1 + ((+a) * b))"},
 		{"!-a", "(!(-a))"},
 		{"a + b + c", "((a + b) + c)"},
 		{"a <= b + c", "(a <= (b + c))"},

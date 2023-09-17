@@ -89,7 +89,7 @@ func TestIfElseExpressions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{"if (true) { 10 }", 10},
+		{"if (true) { +10 }", 10},
 		{"if (false) { 10 }", nil},
 		{"if (1) { 10 }", nil},
 		{"if (1 < 2) { 10 }", 10},
@@ -150,6 +150,30 @@ func TestReturnStatements(t *testing.T) {
 			testIntegerObject(t, evaluated, int64(v))
 		case bool:
 			testBooleanObject(t, evaluated, v)
+		}
+	}
+}
+
+func TestErrorHandling(t *testing.T) {
+	tests := []struct {
+		input           string
+		expectedMessage string
+	}{
+		{"5 + true;", "invalid operation: 5 + true (mismatched types INTEGER and BOOLEAN)"},
+		{"5 + true; 5;", "invalid operation: 5 + true (mismatched types INTEGER and BOOLEAN)"},
+		// {"-true", "invalid operation: -BOOLEAN (operator - not defined on BOOLEAN)"},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		errObj, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("no error object returned. got=%T(%+v)",
+				evaluated, evaluated)
+			continue
+		}
+		if errObj.Message != tt.expectedMessage {
+			t.Errorf("wrong error message. expected=%q, got=%q",
+				tt.expectedMessage, errObj.Message)
 		}
 	}
 }

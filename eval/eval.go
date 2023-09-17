@@ -1,6 +1,8 @@
 package eval
 
 import (
+	"fmt"
+
 	"github.com/yassinebenaid/nishimia/ast"
 	"github.com/yassinebenaid/nishimia/object"
 )
@@ -44,6 +46,10 @@ func evalProgram(stmts []ast.Statement) object.Object {
 		if returned, ok := result.(*object.ReturnValue); ok {
 			return returned.Value
 		}
+
+		if result != nil && result.Type() == object.ERROR_OBJ {
+			return result
+		}
 	}
 
 	return result
@@ -58,6 +64,10 @@ func evalBlockStatements(block *ast.BlockStatement) object.Object {
 		if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
 			return result
 		}
+
+		if result != nil && result.Type() == object.ERROR_OBJ {
+			return result
+		}
 	}
 
 	return result
@@ -69,6 +79,8 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 		return evalBangOperatorExpression(right)
 	case "-":
 		return evalMinusPrefixOperatorExpression(right)
+	case "+":
+		return evalPlusPrefixOperatorExpression(right)
 	default:
 		return NULL // TODO : throw error
 	}
@@ -84,8 +96,14 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		return evalBooleanInfixExpression(operator, left, right)
 	}
 
-	return NULL // TODO : throw error
-
+	return newError(
+		"invalid operation: %s %s %s (mismatched types %s and %s)",
+		left.Inspect(),
+		operator,
+		right.Inspect(),
+		left.Type(),
+		right.Type(),
+	)
 }
 
 func evalBangOperatorExpression(right object.Object) object.Object {
@@ -110,6 +128,17 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 	value := right.(*object.Integer).Value
 
 	return &object.Integer{Value: value * -1}
+}
+
+func evalPlusPrefixOperatorExpression(right object.Object) object.Object {
+
+	if right.Type() != object.INTEGER_OBJ {
+		return NULL // TODO: register error here
+	}
+
+	value := right.(*object.Integer).Value
+
+	return &object.Integer{Value: value}
 }
 
 func evalIntegerInfixExpression(operator string, left object.Object, right object.Object) object.Object {
@@ -184,4 +213,8 @@ func nativeBooleanObject(input bool) *object.Boolean {
 	}
 
 	return FALSE
+}
+
+func newError(msg string, args ...any) *object.Error {
+	return &object.Error{Message: fmt.Sprintf(msg, args...)}
 }
