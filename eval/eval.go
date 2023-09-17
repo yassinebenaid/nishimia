@@ -23,6 +23,8 @@ func Eval(node ast.Node) object.Object {
 		return nativeBooleanObject(v.Value)
 	case *ast.PrefixExpression:
 		return evalPrefixExpression(v.Operator, Eval(v.Right))
+	case *ast.InfixExpression:
+		return evalInfixExpression(v.Operator, Eval(v.Left), Eval(v.Right))
 	}
 	return NULL
 }
@@ -56,6 +58,20 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 	}
 }
 
+func evalInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+
+	if left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ {
+		return evalIntegerInfixExpression(operator, left, right)
+	}
+
+	if left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ {
+		return evalBooleanInfixExpression(operator, left, right)
+	}
+
+	return NULL // TODO : throw error
+
+}
+
 func evalBangOperatorExpression(right object.Object) object.Object {
 	switch right {
 	case TRUE:
@@ -75,8 +91,49 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 		return NULL // TODO: register error here
 	}
 
-	inte := right.(*object.Integer)
-	inte.Value = inte.Value * -1
+	value := right.(*object.Integer).Value
 
-	return inte
+	return &object.Integer{Value: value * -1}
+}
+
+func evalIntegerInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+	switch operator {
+	case "+":
+		return &object.Integer{Value: left.(*object.Integer).Value + right.(*object.Integer).Value}
+	case "-":
+		return &object.Integer{Value: left.(*object.Integer).Value - right.(*object.Integer).Value}
+	case "*":
+		return &object.Integer{Value: left.(*object.Integer).Value * right.(*object.Integer).Value}
+	case "/":
+		return &object.Integer{Value: left.(*object.Integer).Value / right.(*object.Integer).Value}
+	case "<":
+		return &object.Boolean{Value: left.(*object.Integer).Value < right.(*object.Integer).Value}
+	case ">":
+		return &object.Boolean{Value: left.(*object.Integer).Value > right.(*object.Integer).Value}
+	case ">=":
+		return &object.Boolean{Value: left.(*object.Integer).Value >= right.(*object.Integer).Value}
+	case "<=":
+		return &object.Boolean{Value: left.(*object.Integer).Value <= right.(*object.Integer).Value}
+	case "!=":
+		return &object.Boolean{Value: left.(*object.Integer).Value != right.(*object.Integer).Value}
+	case "==":
+		return &object.Boolean{Value: left.(*object.Integer).Value == right.(*object.Integer).Value}
+	default:
+		return NULL // TODO : throw error
+	}
+}
+
+func evalBooleanInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+	switch operator {
+	case "&&":
+		return &object.Boolean{Value: left.(*object.Boolean).Value && right.(*object.Boolean).Value}
+	case "||":
+		return &object.Boolean{Value: left.(*object.Boolean).Value || right.(*object.Boolean).Value}
+	case "==":
+		return &object.Boolean{Value: left.(*object.Boolean).Value == right.(*object.Boolean).Value}
+	case "!=":
+		return &object.Boolean{Value: left.(*object.Boolean).Value != right.(*object.Boolean).Value}
+	default:
+		return NULL // TODO : throw error
+	}
 }

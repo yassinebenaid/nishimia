@@ -37,6 +37,8 @@ const (
 	GTEQUAL  TokenType = ">="
 	LTEQUAL  TokenType = "<="
 	NOTEQU   TokenType = "!="
+	AND      TokenType = "&&"
+	OR       TokenType = "||"
 
 	// delimiters
 	COMMA     TokenType = ","

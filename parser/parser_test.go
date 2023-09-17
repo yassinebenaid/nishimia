@@ -319,6 +319,12 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{"!true == !false", "((!true) == (!false))"},
 		{"!true != false", "((!true) != false)"},
 		{"!true != !false", "((!true) != (!false))"},
+		{"!true != !false", "((!true) != (!false))"},
+
+		{"true && false", "(true && false)"},
+		{"true || false", "(true || false)"},
+		{"true || false && true", "((true || false) && true)"},
+		{"true && false && true || false", "(((true && false) && true) || false)"},
 
 		{"(a + b) * 2", "((a + b) * 2)"},
 		{"(a + b) / 2", "((a + b) / 2)"},
