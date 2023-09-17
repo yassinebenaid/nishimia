@@ -5,10 +5,10 @@ import "fmt"
 type ObjectType string
 
 const (
-	INTEGER_OBJ      = "INTEGER"
-	BOOLEAN_OBJ      = "BOOLEAN"
-	NULL_OBJ         = "NULL"
-	RETURN_VALUE_OBJ = "RETURN_VALUE"
+	INTEGER_OBJ      ObjectType = "INTEGER"
+	BOOLEAN_OBJ      ObjectType = "BOOLEAN"
+	NULL_OBJ         ObjectType = "NULL"
+	RETURN_VALUE_OBJ ObjectType = "RETURN_VALUE"
 )
 
 type Object interface {
