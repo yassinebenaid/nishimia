@@ -13,7 +13,7 @@ var (
 	FALSE = &object.Boolean{Value: false}
 )
 
-func Eval(node ast.Node, env *object.Envirement) object.Object {
+func Eval(node ast.Node, env *object.Environment) object.Object {
 	switch v := node.(type) {
 	case *ast.Program:
 		return evalProgram(v.Statements, env)
@@ -72,7 +72,7 @@ func Eval(node ast.Node, env *object.Envirement) object.Object {
 	return NULL
 }
 
-func evalProgram(stmts []ast.Statement, env *object.Envirement) object.Object {
+func evalProgram(stmts []ast.Statement, env *object.Environment) object.Object {
 	var result object.Object
 
 	for _, stmt := range stmts {
@@ -89,7 +89,7 @@ func evalProgram(stmts []ast.Statement, env *object.Envirement) object.Object {
 	return result
 }
 
-func evalBlockStatements(block *ast.BlockStatement, env *object.Envirement) object.Object {
+func evalBlockStatements(block *ast.BlockStatement, env *object.Environment) object.Object {
 	var result object.Object
 
 	for _, stmt := range block.Statements {
@@ -255,7 +255,7 @@ func evalBooleanInfixExpression(operator string, left object.Object, right objec
 	}
 }
 
-func evalConditionalExpression(node *ast.IfElseExpression, env *object.Envirement) object.Object {
+func evalConditionalExpression(node *ast.IfElseExpression, env *object.Environment) object.Object {
 	cond := Eval(node.Condition, env)
 	if isError(cond) {
 		return cond
@@ -276,7 +276,7 @@ func evalConditionalExpression(node *ast.IfElseExpression, env *object.Enviremen
 	return NULL
 }
 
-func evalVariableInitializationExpression(node *ast.VarStatement, env *object.Envirement) object.Object {
+func evalVariableInitializationExpression(node *ast.VarStatement, env *object.Environment) object.Object {
 	val := Eval(node.Value, env)
 	if isError(val) {
 		return val
@@ -291,7 +291,7 @@ func evalVariableInitializationExpression(node *ast.VarStatement, env *object.En
 	return NULL
 }
 
-func evalCallExpression(node *ast.CallExpression, env *object.Envirement) object.Object {
+func evalCallExpression(node *ast.CallExpression, env *object.Environment) object.Object {
 	function := Eval(node.Function, env)
 	if isError(function) {
 		return function
@@ -299,13 +299,14 @@ func evalCallExpression(node *ast.CallExpression, env *object.Envirement) object
 
 	fn, ok := function.(*object.Function)
 	if !ok {
-		return newError("invalid identifier in function call : %s is not a valid identifier or function literal",
-			function.Inspect())
+		return newError(
+			"invalid identifier in function call : %s is not a valid identifier or function literal",
+			function.Inspect(),
+		)
 	}
 
 	if len(fn.Params) != len(node.Arguments) {
-		return newError("invalid arguments count in call to %s, expected %d argumets, got %d ",
-			fn.Inspect(),
+		return newError("invalid arguments count in function call, expected %d argumets, got %d ",
 			len(fn.Params),
 			len(node.Arguments),
 		)
@@ -316,20 +317,25 @@ func evalCallExpression(node *ast.CallExpression, env *object.Envirement) object
 		return args[0]
 	}
 
-	newEnv := object.NewEnclosedEnvirement(env)
+	newEnv := object.NewEnclosedEnvironment(fn.Env)
 	for k, v := range fn.Params {
 		newEnv.Set(v.Value, args[k])
 	}
 
-	result, ok := Eval(fn.Body, newEnv).(*object.ReturnValue)
-	if ok {
-		return result.Value
+	result := Eval(fn.Body, newEnv)
+
+	if result.Type() == object.RETURN_VALUE_OBJ {
+		return result.(*object.ReturnValue).Value
+	}
+
+	if result.Type() == object.ERROR_OBJ {
+		return result
 	}
 
 	return NULL
 }
 
-func evalExpressions(exps []ast.Expression, env *object.Envirement) []object.Object {
+func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Object {
 	var result []object.Object
 
 	for _, exp := range exps {

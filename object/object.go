@@ -77,9 +77,10 @@ func (e *Error) Inspect() string {
 }
 
 type Function struct {
+	Name   string
 	Params []*ast.Identifier
 	Body   *ast.BlockStatement
-	Env    *Envirement
+	Env    *Environment
 }
 
 func (*Function) Type() ObjectType { return FUNCTION_OBJ }
@@ -91,7 +92,7 @@ func (f *Function) Inspect() string {
 		params = append(params, p.String())
 	}
 
-	out.WriteString("fn")
+	out.WriteString("func")
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
