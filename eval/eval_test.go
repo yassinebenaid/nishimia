@@ -178,6 +178,7 @@ func TestErrorHandling(t *testing.T) {
 		{"if(1+5){5}", "non-boolean value in if-statement , ( got=INTEGER, want=BOOLEAN )"},
 		{"if(1){5}", "non-boolean value in if-statement , ( got=INTEGER, want=BOOLEAN )"},
 		{"a;", "undefined identifier : a"},
+		{`"yassine" - "benaid"`, "invalid operation: yassine - benaid"},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
