@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"strings"
+
 	"github.com/yassinebenaid/nishimia/token"
 )
 
@@ -31,6 +33,9 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, '=')
 		}
+	case '"':
+		l.readChar()
+		tok = l.readString()
 	case '+':
 		tok = newToken(token.PLUS, '+')
 	case '-':
@@ -155,6 +160,21 @@ func (l *Lexer) skipWhiteSpace() {
 	for isWhiteSpace(l.ch) {
 		l.readChar()
 	}
+}
+
+func (l *Lexer) readString() token.Token {
+	var tok = token.Token{Type: token.STRING}
+	var str strings.Builder
+
+	for ; l.ch != '"'; l.readChar() {
+		if l.ch == '\\' {
+			l.readChar()
+		}
+		str.WriteByte(l.ch)
+	}
+
+	tok.Literal = str.String()
+	return tok
 }
 
 func newToken(t token.TokenType, v byte) token.Token {

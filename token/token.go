@@ -12,8 +12,9 @@ const (
 	EOF     TokenType = "EOF"
 
 	// literals + identifiers
-	IDENT TokenType = "IDENT"
-	INT   TokenType = "INT"
+	IDENT  TokenType = "IDENT"
+	INT    TokenType = "INT"
+	STRING TokenType = "STRING"
 
 	// keywords
 	FUNCTION TokenType = "FUNCTION"

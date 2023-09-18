@@ -67,6 +67,9 @@ func TestNextToken(t *testing.T) {
 	var fiveIsZero = isZero(five);
 	var fiveIsNotZero = isNotZero(five);
 	var tenIsNegativeOrZero = isNegativeOrZero(five);
+
+	var name = "yassine benaid";
+	var skipped = "yassine\" benaid";
 `
 
 	cases := []struct {
@@ -345,6 +348,18 @@ func TestNextToken(t *testing.T) {
 		{token.LPARENT, "("},
 		{token.IDENT, "five"},
 		{token.RPARENT, ")"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "name"},
+		{token.ASSIGN, "="},
+		{token.STRING, "yassine benaid"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "skipped"},
+		{token.ASSIGN, "="},
+		{token.STRING, "yassine\" benaid"},
 		{token.SEMICOLON, ";"},
 
 		{token.EOF, ""},
