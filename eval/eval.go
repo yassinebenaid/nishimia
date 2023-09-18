@@ -29,6 +29,10 @@ func Eval(node ast.Node, env *object.Envirement) object.Object {
 		return evalVariableInitializationExpression(v, env)
 	case *ast.BlockStatement:
 		return evalBlockStatements(v, env)
+	case *ast.FunctionLiteral:
+		return &object.Function{Params: v.Params, Body: v.Body, Env: env}
+	case *ast.CallExpression:
+		return evalCallExpression(v, env)
 	case *ast.PrefixExpression:
 		val := Eval(v.Right, env)
 		if isError(val) {
@@ -281,6 +285,60 @@ func evalVariableInitializationExpression(node *ast.VarStatement, env *object.En
 	env.Set(node.Name.Value, val)
 
 	return NULL
+}
+
+func evalCallExpression(node *ast.CallExpression, env *object.Envirement) object.Object {
+	function := Eval(node.Function, env)
+	if isError(function) {
+		return function
+	}
+
+	fn, ok := function.(*object.Function)
+	if !ok {
+		return newError("invalid identifier in function call : %s is not a valid identifier or function literal",
+			function.Inspect())
+	}
+
+	if len(fn.Params) != len(node.Arguments) {
+		return newError("invalid arguments count in call to %s, expected %d argumets, got %d ",
+			fn.Inspect(),
+			len(fn.Params),
+			len(node.Arguments),
+		)
+	}
+
+	args := evalExpressions(node.Arguments, env)
+	if len(args) == 1 && isError(args[0]) {
+		return args[0]
+	}
+
+	newEnv := object.NewEnclosedEnvirement(env)
+	for k, v := range fn.Params {
+		newEnv.Set(v.Value, args[k])
+	}
+
+	result, ok := Eval(fn.Body, newEnv).(*object.ReturnValue)
+	if ok {
+		return result.Value
+	}
+
+	return NULL
+}
+
+func evalExpressions(exps []ast.Expression, env *object.Envirement) []object.Object {
+	var result []object.Object
+
+	for _, exp := range exps {
+		evaluated := Eval(exp, env)
+
+		if isError(evaluated) {
+			return []object.Object{evaluated}
+		}
+
+		result = append(result, evaluated)
+	}
+
+	return result
 }
 
 func nativeBooleanObject(input bool) *object.Boolean {

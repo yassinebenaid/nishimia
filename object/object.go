@@ -1,6 +1,12 @@
 package object
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"strings"
+
+	"github.com/yassinebenaid/nishimia/ast"
+)
 
 type ObjectType string
 
@@ -10,6 +16,7 @@ const (
 	NULL_OBJ         ObjectType = "NULL"
 	RETURN_VALUE_OBJ ObjectType = "RETURN_VALUE"
 	ERROR_OBJ        ObjectType = "ERROR"
+	FUNCTION_OBJ     ObjectType = "FUNCTION"
 )
 
 type Object interface {
@@ -67,4 +74,28 @@ type Error struct {
 func (*Error) Type() ObjectType { return ERROR_OBJ }
 func (e *Error) Inspect() string {
 	return "ERROR: " + e.Message
+}
+
+type Function struct {
+	Params []*ast.Identifier
+	Body   *ast.BlockStatement
+	Env    *Envirement
+}
+
+func (*Function) Type() ObjectType { return FUNCTION_OBJ }
+func (f *Function) Inspect() string {
+	var out bytes.Buffer
+	var params []string
+
+	for _, p := range f.Params {
+		params = append(params, p.String())
+	}
+
+	out.WriteString("fn")
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(")")
+	out.WriteString(f.Body.String())
+
+	return out.String()
 }

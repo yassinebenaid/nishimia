@@ -197,6 +197,54 @@ func TestVarStatements(t *testing.T) {
 	testNullObject(t, testEval("var num = 10;"))
 }
 
+func TestFunction(t *testing.T) {
+	input := "func(x) { x + 2; };"
+
+	evaluated := testEval(input)
+
+	fn, ok := evaluated.(*object.Function)
+	if !ok {
+		t.Fatalf("object is not Function. got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if len(fn.Params) != 1 {
+		t.Fatalf("function has wrong params. Params=%+v",
+			fn.Params)
+	}
+
+	if fn.Params[0].String() != "x" {
+		t.Fatalf("param is not 'x'. got=%q", fn.Params[0])
+	}
+
+	expectedBody := "{(x + 2)}"
+
+	if fn.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, fn.Body.String())
+	}
+
+}
+
+func TestFunctionApplication(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"func(x) { return x; }(5);", 5},
+		{"var identity = func(x) { return x; }; identity(5);", 5},
+		{"var identity = func(x) { return x; }; identity(5);", 5},
+		{"var double = func(x) { return x * 2; }; double(5);", 10},
+		{"var add = func(x, y) { return x + y; }; add(5, 5);", 10},
+		{"var add = func(x, y) { return x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"var num = 4;var add = func(num) { return num + 2; }; add(num);", 6},
+		{"var num = 4;var add = func(num) { return num + 2; }; add(num+5);", 11},
+		{"var num = 4;var add = func(num) { return num + 2; }; add(num*2);", 10},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
 func testEval(inp string) object.Object {
 	lex := lexer.New(inp)
 	par := parser.New(lex)
