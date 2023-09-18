@@ -217,6 +217,27 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
+func TestStringLiteralExpression(t *testing.T) {
+	input := `"hello world";`
+	lex := lexer.New(input)
+	par := New(lex)
+	program := par.ParseProgram()
+
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected 1 statement, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("statement type is incorrect, expected ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	testStringLiteral(t, stat.Expression, "hello world")
+}
+
 func TestParsingPrefixExpressions(t *testing.T) {
 	prefixTests := []struct {
 		input      string
@@ -695,6 +716,27 @@ func testIntegerLiteral(t *testing.T, exp ast.Expression, expected int64) bool {
 
 	if integ.TokenLiteral() != fmt.Sprintf("%d", expected) {
 		t.Errorf("failed to assert that the expected token literal of %s is equal to %s", fmt.Sprintf("%d", expected), integ.TokenLiteral())
+		return false
+	}
+
+	return true
+}
+
+func testStringLiteral(t *testing.T, exp ast.Expression, expected string) bool {
+	str, ok := exp.(*ast.StringLiteral)
+
+	if !ok {
+		t.Errorf("expected expression of type StringLiteral, got %T", exp)
+		return false
+	}
+
+	if str.Value != expected {
+		t.Errorf("failed to assert that the expected value of %s is equal to %s", expected, str.Value)
+		return false
+	}
+
+	if str.TokenLiteral() != expected {
+		t.Errorf("failed to assert that the expected token literal of %s is equal to %s", expected, str.TokenLiteral())
 		return false
 	}
 

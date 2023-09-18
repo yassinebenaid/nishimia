@@ -73,6 +73,10 @@ func (p *Parser) parseInteger() ast.Expression {
 	return exp
 }
 
+func (p *Parser) parseString() ast.Expression {
+	return &ast.StringLiteral{Token: p.currentToken, Value: p.currentToken.Literal}
+}
+
 func (p *Parser) parsePrefixExpressions() ast.Expression {
 	exp := &ast.PrefixExpression{
 		Token:    p.currentToken,

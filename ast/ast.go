@@ -207,6 +207,15 @@ func (i *BooleanLiteral) expressionNode()      {}
 func (i *BooleanLiteral) TokenLiteral() string { return i.Token.Literal }
 func (i *BooleanLiteral) String() string       { return i.Token.Literal }
 
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (sl *StringLiteral) expressionNode()      {}
+func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
+func (sl *StringLiteral) String() string       { return sl.Token.Literal }
+
 // This node represents the if-else expression
 type IfElseExpression struct {
 	Token       token.Token
