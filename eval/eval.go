@@ -199,6 +199,14 @@ func evalIntegerInfixExpression(operator string, left object.Object, right objec
 		return nativeBooleanObject(leftValue != rightValue)
 	case "==":
 		return nativeBooleanObject(leftValue == rightValue)
+	case "&&", "||":
+		return newError(
+			"invalid operation: %d %s %d , operator %s can only be used with BOOLEAN. got INTEGER",
+			leftValue,
+			operator,
+			rightValue,
+			operator,
+		)
 	default:
 		return newError(
 			"invalid operation: %d %s %d",

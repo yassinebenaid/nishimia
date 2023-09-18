@@ -115,6 +115,9 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseVarBindingStatement()
 	case token.RETURN:
 		return p.parseReturnStatement()
+	case token.ILLIGAL:
+		p.errors = append(p.errors, "Illigal token : "+p.currentToken.Literal)
+		return nil
 	default:
 		return p.parseExpressionStatement()
 	}
