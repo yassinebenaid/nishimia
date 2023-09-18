@@ -166,7 +166,7 @@ func (l *Lexer) readString() token.Token {
 	var tok = token.Token{Type: token.STRING}
 	var str strings.Builder
 
-	for ; l.ch != '"'; l.readChar() {
+	for ; l.ch != '"' && l.ch != 0; l.readChar() {
 		if l.ch == '\\' {
 			l.readChar()
 		}

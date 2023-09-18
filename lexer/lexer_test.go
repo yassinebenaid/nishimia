@@ -69,7 +69,7 @@ func TestNextToken(t *testing.T) {
 	var tenIsNegativeOrZero = isNegativeOrZero(five);
 
 	var name = "yassine benaid";
-	var skipped = "yassine\" benaid";
+	var skipped = "yassine\" benaid;
 `
 
 	cases := []struct {
