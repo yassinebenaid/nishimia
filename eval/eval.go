@@ -21,6 +21,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return Eval(v.Expression, env)
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: v.Value}
+	case *ast.StringLiteral:
+		return &object.String{Value: v.Value}
 	case *ast.BooleanLiteral:
 		return nativeBooleanObject(v.Value)
 	case *ast.IfElseExpression:
@@ -130,6 +132,10 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 
 	if left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ {
 		return evalBooleanInfixExpression(operator, left, right)
+	}
+
+	if left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ {
+		return evalStringInfixExpression(operator, left, right)
 	}
 
 	return newError(
@@ -253,6 +259,23 @@ func evalBooleanInfixExpression(operator string, left object.Object, right objec
 			rightValue,
 		)
 	}
+}
+
+func evalStringInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+	leftValue := left.(*object.String).Value
+	rightValue := right.(*object.String).Value
+
+	if operator == "+" {
+		return &object.String{Value: leftValue + rightValue}
+	}
+
+	return newError(
+		"invalid operation: %s %s %s",
+		leftValue,
+		operator,
+		rightValue,
+	)
+
 }
 
 func evalConditionalExpression(node *ast.IfElseExpression, env *object.Environment) object.Object {
