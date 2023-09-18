@@ -162,6 +162,7 @@ func TestErrorHandling(t *testing.T) {
 		{"!(1*5)", "invalid operation: !5 (operator \"!\" not defined on INTEGER)"},
 		{"if(1+5){5}", "non-boolean value in if-statement , ( got=INTEGER, want=BOOLEAN )"},
 		{"if(1){5}", "non-boolean value in if-statement , ( got=INTEGER, want=BOOLEAN )"},
+		{"a;", "undefined identifier : a"},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
@@ -176,14 +177,31 @@ func TestErrorHandling(t *testing.T) {
 				tt.expectedMessage, errObj.Message)
 		}
 	}
+}
 
+func TestVarStatements(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"var a = 5; a;", 5},
+		{"var a = 5 * 5; a;", 25},
+		{"var a = 5; var b = a; b;", 5},
+		{"var a = 5; var b = a; var c = a + b + 5; c;", 15},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+
+	testNullObject(t, testEval("var num = 10;"))
 }
 
 func testEval(inp string) object.Object {
 	lex := lexer.New(inp)
 	par := parser.New(lex)
 	program := par.ParseProgram()
-	return Eval(program)
+	return Eval(program, object.NewEnvirement())
 }
 
 func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {

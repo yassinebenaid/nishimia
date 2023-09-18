@@ -7,6 +7,7 @@ import (
 
 	"github.com/yassinebenaid/nishimia/eval"
 	"github.com/yassinebenaid/nishimia/lexer"
+	"github.com/yassinebenaid/nishimia/object"
 	"github.com/yassinebenaid/nishimia/parser"
 )
 
@@ -14,6 +15,7 @@ const PROMPT = ">>> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvirement()
 
 	fmt.Print(PROMPT)
 
@@ -38,7 +40,7 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := eval.Eval(program)
+		evaluated := eval.Eval(program, env)
 
 		if evaluated != nil {
 			io.WriteString(out, "\n")
