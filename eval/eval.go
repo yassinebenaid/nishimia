@@ -282,6 +282,10 @@ func evalVariableInitializationExpression(node *ast.VarStatement, env *object.En
 		return val
 	}
 
+	if env.Has(node.Name.Value) {
+		return newError("variable %s already defined", node.Name.Value)
+	}
+
 	env.Set(node.Name.Value, val)
 
 	return NULL
