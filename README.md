@@ -1,6 +1,6 @@
 # nishimia
 
-A fully fnctional interpreter built on top of [go programming languae](https://go.dev), This is an educational project, and so its not that fancy , but though its still fully functional with support for :
+A fully fnctional interpreter built on top of [go programming language](https://go.dev), This is an educational project, and so its not that fancy , but though its still fully functional with support for :
 
 - variables and bindings
 - functions
