@@ -10,17 +10,17 @@ var multiply = func(x, y) {
 };
 
 var devide = func(x, y) {
-	if(y > 0){
+	if y > 0 {
 		return x / y;
-	}else{
+	} else {
 		return 0;
 	}
 };
 
 var isPositive = func(x) {
-	if(x >= 0){
+	if x >= 0 {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 };
@@ -38,16 +38,18 @@ var isNegativeOrZero = func(x) {
 };
 
 var max = func(x, y) {
-	if(x > y){
+	if x > y {
 		return x ;
 	}
 
-	if(x < y){
+	if x < y {
 		return y ;
 	}
 
 	return x;
 };
+
+
 
 var addition = add(five, ten);
 var multiplication = multiply(five, ten);
@@ -57,4 +59,13 @@ var fiveIsPositive = isPositive(five);
 var fiveIsZero = isZero(five);
 var fiveIsNotZero = isNotZero(five);
 var tenIsNegativeOrZero = isNegativeOrZero(five);
+
 var name = "yassine benaid";
+
+var getAdditionClosure = func(x) {
+	return func(i) { return x + i;};
+};
+
+
+var additionClosure = getAdditionClosure(2);
+additionClosure(5);
