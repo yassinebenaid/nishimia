@@ -43,12 +43,16 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return evalPrefixExpression(v.Operator, val)
 	case *ast.Identifier:
-		val, ok := env.Get(v.Value)
-		if !ok {
-			return newError("undefined identifier : %s", v.Value)
+		if val, ok := env.Get(v.Value); ok {
+			return val
 		}
 
-		return val
+		if val, ok := builtins[v.Value]; ok {
+			return val
+		}
+
+		return newError("undefined identifier : %s", v.Value)
+
 	case *ast.InfixExpression:
 		l := Eval(v.Left, env)
 		if isError(l) {
@@ -320,6 +324,15 @@ func evalCallExpression(node *ast.CallExpression, env *object.Environment) objec
 		return function
 	}
 
+	args := evalExpressions(node.Arguments, env)
+	if len(args) == 1 && isError(args[0]) {
+		return args[0]
+	}
+
+	if fn, ok := function.(*object.Builtin); ok {
+		return fn.Fn(args...)
+	}
+
 	fn, ok := function.(*object.Function)
 	if !ok {
 		return newError(
@@ -333,11 +346,6 @@ func evalCallExpression(node *ast.CallExpression, env *object.Environment) objec
 			len(fn.Params),
 			len(node.Arguments),
 		)
-	}
-
-	args := evalExpressions(node.Arguments, env)
-	if len(args) == 1 && isError(args[0]) {
-		return args[0]
 	}
 
 	newEnv := object.NewEnclosedEnvironment(fn.Env)
