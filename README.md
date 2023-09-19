@@ -4,6 +4,7 @@ A fully fnctional interpreter built on top of [go programming language](https://
 
 - variables and bindings
 - functions
+- built in functions
 - if-conditions
 - Closures
 - functions are first-class sitizens , this means you can pass them as arguments or return them as values,
@@ -74,6 +75,7 @@ var max = func(x, y) {
 
 
 var name = "yassine benaid";
+len(name); // len is built in here , and this comment is not supported by the way
 
 var getAdditionClosure = func(x) {
 	return func(i) { return x + i;};
