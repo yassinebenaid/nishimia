@@ -1,5 +1,5 @@
 # nishimia
-a full fnctional interpreter built on top of golang, this is an educational project, and so its not that fancy , but though , its still fully functional, with support for
+a fully fnctional interpreter built on top of golang, this is an educational project, and so its not that fancy , but though , its still fully functional, with support for
 variables and bindings, functions , and if-conditions , also functions are first-class sitizens , this means you can pass them as arguments or return them as values, and ofcourse error handling out of the box
 
 here is a sinppet of all available features :
