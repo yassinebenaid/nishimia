@@ -7,7 +7,7 @@ A fully fnctional interpreter built on top of [go programming language](https://
 - built in functions
 - if-conditions
 - Closures
-- functions are first-class sitizens , this means you can pass them as arguments or return them as values,
+- functions are first-class citizens , this means you can pass them as arguments or return them as values,
 - error handling out of the box
 
 nothing of the above features is perfect , but as said, its still work perfectly
