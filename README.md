@@ -10,7 +10,7 @@ A fully fnctional interpreter built on top of [go programming language](https://
 - functions are first-class citizens , this means you can pass them as arguments or return them as values,
 - error handling out of the box
 
-nothing of the above features is perfect , but as said, its still work perfectly
+none of the above features perfect , but as said, its still work perfectly
 
 here is a sinppet of all available features :
 
