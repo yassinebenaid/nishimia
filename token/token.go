@@ -44,6 +44,7 @@ const (
 	// delimiters
 	COMMA     TokenType = ","
 	SEMICOLON TokenType = ";"
+	COLON     TokenType = ":"
 	LPARENT   TokenType = "("
 	RPARENT   TokenType = ")"
 	LBRACE    TokenType = "{"

@@ -363,3 +363,28 @@ func (a *ArrayIndexExpression) String() string {
 
 	return out.String()
 }
+
+// This node represents the array ,.
+type HashLiteral struct {
+	Token token.Token
+	Items map[Expression]Expression
+}
+
+func (h *HashLiteral) expressionNode()      {}
+func (h *HashLiteral) TokenLiteral() string { return h.Token.Literal }
+func (h *HashLiteral) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("{")
+
+	for k, v := range h.Items {
+		out.WriteString(k.String())
+		out.WriteString(": ")
+		out.WriteString(v.String())
+		out.WriteString(" ,")
+	}
+
+	out.WriteString("}")
+
+	return out.String()
+}

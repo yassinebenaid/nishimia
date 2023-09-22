@@ -771,6 +771,54 @@ func TestArrayIndexParsing(t *testing.T) {
 	}
 }
 
+func TestHashLiteralParsing(t *testing.T) {
+	input := `{name: "yassinebenaid",age: 10};`
+
+	tests := []struct {
+		expectedKey   string
+		expectedValue any
+	}{
+		{"name", "yassinebenaid"},
+		{"age", 10},
+	}
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	hash, ok := stat.Expression.(*ast.HashLiteral)
+	if !ok {
+		t.Fatalf("expected statement type of HashLiteral, got=%T", stat)
+	}
+
+	if len(hash.Items) != 2 {
+		t.Fatalf("expected hash items count to be 2, got=%d", len(hash.Items))
+	}
+
+	for _, tt := range tests {
+
+		item, ok := hash.Items[tt.expectedKey]
+		if !ok {
+			t.Fatalf("failed to assert that the hash has item : %s", tt.expectedKey)
+		}
+
+		if item.String() != tt.expectedValue {
+			t.Fatalf("failed to assert that the %s is to %s", tt.expectedValue, item)
+		}
+	}
+
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
