@@ -43,6 +43,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return arr
+	case *ast.ArrayIndexExpression:
+		return evalArrayIndex(v, env)
 	case *ast.PrefixExpression:
 		val := Eval(v.Right, env)
 		if isError(val) {
@@ -388,6 +390,42 @@ func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Ob
 	}
 
 	return result
+}
+
+func evalArrayIndex(arr *ast.ArrayIndexExpression, env *object.Environment) object.Object {
+	left := Eval(arr.Left, env)
+	if isError(left) {
+		return left
+	}
+
+	array, ok := left.(*object.Array)
+	if !ok {
+		return newError("failed to read index on type %s", left.Type())
+	}
+
+	ind := Eval(arr.Index, env)
+	if isError(left) {
+		return left
+	}
+
+	index, ok := ind.(*object.Integer)
+	if !ok {
+		return newError("cannot convert %s of type %s to type %s",
+			ind.Inspect(),
+			ind.Type(),
+			object.INTEGER_OBJ,
+		)
+	}
+
+	if index.Value >= int64(len(array.Items)) {
+		return newError("index out of range [%d] with length %d",
+			index.Value,
+			len(array.Items),
+		)
+	}
+
+	return array.Items[index.Value]
+
 }
 
 func nativeBooleanObject(input bool) *object.Boolean {
