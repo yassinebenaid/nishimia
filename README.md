@@ -3,6 +3,11 @@
 A fully functional interpreter built on top of [go programming language](https://go.dev), This is an educational project, and so its not that fancy , but though its still fully functional with support for :
 
 - variables and bindings
+- data types :
+  - integers
+  - booleans
+  - arrays
+  - null
 - functions
 - built in functions
 - if-conditions
@@ -92,18 +97,22 @@ var AcceptClosure = func(closure,value){
 AcceptClosure(func(v){
 	return v * 15;
 },10)
+
+var myArr = [1,2,3,"yassinebenaid"]
+myArr[0];
+myArr[2+2-1];
 ```
 
 ## Installation && Testing
-To get started , clone this repository , then in the project directory run : `go build -o nishimia`  , this will built the executable for you, 
+
+To get started , clone this repository , then in the project directory run : `go build -o nishimia` , this will built the executable for you,
 
 The interpreter comes with a `repl` , you can use to run the code in the fly, run `./nishimia` with no extra arguments to get started
 
 ![image](https://github.com/yassinebenaid/nishimia/assets/101285507/c4902ca9-e6e0-4a4d-b3b3-5886bdd2a018)
 
-
 To run a source code from a file , run `./nishimia path/to/file.ns`
 
-
 # Warning
-please if you like this language and decided to rewrite all your SAAS projects and services using it, please don't , just don't  , thanks.
+
+please if you like this language and decided to rewrite all your SAAS projects and services using it, please don't , just don't , thanks.

@@ -25,8 +25,8 @@ var devide = func(x, y) {
 var isPositive = func(x) {
 	if x >= 0 {
 		return true;
-	} 
-	
+	}
+
 	return false;
 };
 
@@ -58,6 +58,7 @@ var max = func(x, y) {
 
 
 var name = "yassine benaid";
+len(name); // len is built in here , and this comment is not supported by the way
 
 var getAdditionClosure = func(x) {
 	return func(i) { return x + i;};
@@ -74,3 +75,7 @@ var AcceptClosure = func(closure,value){
 AcceptClosure(func(v){
 	return v * 15;
 },10)
+
+var myArr = [1,2,3,"yassinebenaid"]
+myArr[0];
+myArr[2+2-1];
