@@ -306,33 +306,23 @@ func TestBuiltinFunctions(t *testing.T) {
 }
 
 func TestArrays(t *testing.T) {
-	tests := []struct {
-		input    string
-		expected []any
-	}{
-		{`[10,20]`, []any{10, 20}},
-		{`[1 * 5+5,16/2]`, []any{10, 8}},
-		{`[10,20]`, []any{10, 20}},
-		{`[10,20]`, []any{10, 20}},
+	input := "[1, 2+3, 4*5]"
+
+	evaluated := testEval(input)
+
+	arr, ok := evaluated.(*object.Array)
+	if !ok {
+		t.Fatalf("expected evaluation to yield object of type object.Array, got=%T", evaluated)
 	}
-	for _, tt := range tests {
-		evaluated := testEval(tt.input)
-		switch expected := tt.expected.(type) {
-		case int:
-			testIntegerObject(t, evaluated, int64(expected))
-		case string:
-			errObj, ok := evaluated.(*object.Error)
-			if !ok {
-				t.Errorf("object is not Error. got=%T (%+v)",
-					evaluated, evaluated)
-				continue
-			}
-			if errObj.Message != expected {
-				t.Errorf("wrong error message. expected=%q, got=%q",
-					expected, errObj.Message)
-			}
-		}
+
+	if len(arr.Items) != 3 {
+		t.Fatalf("expected array length to be 3, got=%T", len(arr.Items))
 	}
+
+	testIntegerObject(t, arr.Items[0], 1)
+	testIntegerObject(t, arr.Items[1], 5)
+	testIntegerObject(t, arr.Items[2], 20)
+
 }
 
 func testEval(inp string) object.Object {

@@ -35,6 +35,14 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.Function{Params: v.Params, Body: v.Body, Env: env}
 	case *ast.CallExpression:
 		return evalCallExpression(v, env)
+	case *ast.ArrayLiteral:
+		arr := &object.Array{Items: make([]object.Object, 0, len(v.Items))}
+
+		for _, i := range v.Items {
+			arr.Items = append(arr.Items, Eval(i, env))
+		}
+
+		return arr
 	case *ast.PrefixExpression:
 		val := Eval(v.Right, env)
 		if isError(val) {
