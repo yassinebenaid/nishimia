@@ -70,6 +70,8 @@ func TestNextToken(t *testing.T) {
 
 	var name = "yassine benaid";
 	var skipped = "yassine\" benaid";
+
+	var myArray = ["yassinebenaid",10,-113];
 `
 
 	cases := []struct {
@@ -360,6 +362,19 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "skipped"},
 		{token.ASSIGN, "="},
 		{token.STRING, "yassine\" benaid"},
+		{token.SEMICOLON, ";"},
+
+		{token.VAR, "var"},
+		{token.IDENT, "myArray"},
+		{token.ASSIGN, "="},
+		{token.LBRACKET, "["},
+		{token.STRING, "yassinebenaid"},
+		{token.COMMA, ","},
+		{token.INT, "10"},
+		{token.COMMA, ","},
+		{token.MINUS, "-"},
+		{token.INT, "113"},
+		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
 
 		{token.EOF, ""},
