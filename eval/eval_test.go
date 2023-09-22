@@ -305,6 +305,36 @@ func TestBuiltinFunctions(t *testing.T) {
 	}
 }
 
+func TestArrays(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected []any
+	}{
+		{`[10,20]`, []any{10, 20}},
+		{`[1 * 5+5,16/2]`, []any{10, 8}},
+		{`[10,20]`, []any{10, 20}},
+		{`[10,20]`, []any{10, 20}},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%+v)",
+					evaluated, evaluated)
+				continue
+			}
+			if errObj.Message != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q",
+					expected, errObj.Message)
+			}
+		}
+	}
+}
+
 func testEval(inp string) object.Object {
 	lex := lexer.New(inp)
 	par := parser.New(lex)

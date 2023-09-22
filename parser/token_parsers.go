@@ -269,3 +269,17 @@ func (p *Parser) parseArrayExpression() ast.Expression {
 
 	return &ast.ArrayLiteral{Items: items}
 }
+
+func (p *Parser) parseArrayIndexExpression(left ast.Expression) ast.Expression {
+	var exp ast.ArrayIndexExpression
+
+	exp.Left = left
+	p.nextToken()
+	exp.Index = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RBRACKET) {
+		return nil
+	}
+
+	return &exp
+}

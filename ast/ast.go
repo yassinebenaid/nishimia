@@ -343,3 +343,23 @@ func (a *ArrayLiteral) String() string {
 
 	return out.String()
 }
+
+// This node represents the array index like array[index] ,.
+type ArrayIndexExpression struct {
+	Token token.Token
+	Left  Expression
+	Index Expression
+}
+
+func (a *ArrayIndexExpression) expressionNode()      {}
+func (a *ArrayIndexExpression) TokenLiteral() string { return a.Token.Literal }
+func (a *ArrayIndexExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(a.Left.String())
+	out.WriteString("[")
+	out.WriteString(a.Index.String())
+	out.WriteString("]")
+
+	return out.String()
+}

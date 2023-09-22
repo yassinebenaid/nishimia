@@ -727,6 +727,48 @@ func TestArrayLiteralParsing(t *testing.T) {
 	}
 }
 
+func TestArrayIndexParsing(t *testing.T) {
+	tests := []struct {
+		input string
+		left  string
+		index string
+	}{
+		{"[1,2,3][0]", "[1, 2, 3]", "0"},
+		{"someFunc()[1]", "someFunc()", "1"},
+		{"funcName[0]", "funcName", "0"},
+		{"[1,2,3][3 - 2]", "[1, 2, 3]", "(3 - 2)"},
+	}
+
+	for _, test := range tests {
+		l := lexer.New(test.input)
+		par := New(l)
+		program := par.ParseProgram()
+		checkParserErrors(t, par)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+		}
+
+		stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+		}
+
+		arr, ok := stat.Expression.(*ast.ArrayIndexExpression)
+		if !ok {
+			t.Fatalf("expected statement type of ArrayIndexExpression, got=%T", stat)
+		}
+
+		if test.left != arr.Left.String() {
+			t.Fatalf("expected arr.Left be %s, got=%s", test.left, arr.Left.String())
+		}
+
+		if test.index != arr.Index.String() {
+			t.Fatalf("expected arr.Left be %s, got=%s", test.index, arr.Index.String())
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return
