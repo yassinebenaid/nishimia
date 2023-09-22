@@ -756,9 +756,9 @@ func TestArrayIndexParsing(t *testing.T) {
 			t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
 		}
 
-		arr, ok := stat.Expression.(*ast.ArrayIndexExpression)
+		arr, ok := stat.Expression.(*ast.IndexExpression)
 		if !ok {
-			t.Fatalf("expected statement type of ArrayIndexExpression, got=%T", stat)
+			t.Fatalf("expected statement type of IndexExpression, got=%T", stat)
 		}
 
 		if test.left != arr.Left.String() {
@@ -821,6 +821,33 @@ func TestHashLiteralParsing(t *testing.T) {
 		}
 	}
 
+}
+
+func TestEmptyHashLiteralParsing(t *testing.T) {
+	input := `{ };`
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	hash, ok := stat.Expression.(*ast.HashLiteral)
+	if !ok {
+		t.Fatalf("expected statement type of HashLiteral, got=%T", stat)
+	}
+
+	if len(hash.Items) != 0 {
+		t.Fatalf("expected hash items count to be 2, got=%d", len(hash.Items))
+	}
 }
 
 func checkParserErrors(t *testing.T, p *Parser) {

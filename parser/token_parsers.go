@@ -315,7 +315,7 @@ func (p *Parser) parseHashExpression() ast.Expression {
 }
 
 func (p *Parser) parseArrayIndexExpression(left ast.Expression) ast.Expression {
-	var exp ast.ArrayIndexExpression
+	var exp ast.IndexExpression
 
 	exp.Left = left
 	p.nextToken()

@@ -370,7 +370,7 @@ func TestHashes(t *testing.T) {
 	}
 
 	if len(hash.Items) != 2 {
-		t.Fatalf("expected array length to be 2, got=%T", len(hash.Items))
+		t.Fatalf("expected hash length to be 2, got=%T", len(hash.Items))
 	}
 
 	tests := map[string]any{
@@ -392,6 +392,54 @@ func TestHashes(t *testing.T) {
 			testIntegerObject(t, v, int64(val))
 		}
 	}
+}
+
+func TestEmptyHashes(t *testing.T) {
+	input := `{ }`
+
+	evaluated := testEval(input)
+
+	hash, ok := evaluated.(*object.Hash)
+	if !ok {
+		t.Fatalf("expected evaluation to yield object of type object.Hash, got=%T", evaluated)
+	}
+
+	if len(hash.Items) != 0 {
+		t.Fatalf("expected hash length to be 2, got=%T", len(hash.Items))
+	}
+}
+
+func TestHashIndexExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{`{"name":"yassinebenaid"}["name"]`, 1},
+		{`{"age": 2*10/2}["age"]`, 10},
+		{`var hash = {"age": 2*10/2};hash["age"]`, 10},
+		{`var hash = func(){ return {"age": 2*10/2};};hash()["age"]`, 10},
+		{`{"age": 2*10/2}["name"]`, "attempts to read undefined hash key [name]"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%+v)",
+					evaluated, evaluated)
+				continue
+			}
+			if errObj.Message != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q",
+					expected, errObj.Message)
+			}
+		}
+	}
+
 }
 
 func testEval(inp string) object.Object {

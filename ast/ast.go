@@ -345,15 +345,15 @@ func (a *ArrayLiteral) String() string {
 }
 
 // This node represents the array index like array[index] ,.
-type ArrayIndexExpression struct {
+type IndexExpression struct {
 	Token token.Token
 	Left  Expression
 	Index Expression
 }
 
-func (a *ArrayIndexExpression) expressionNode()      {}
-func (a *ArrayIndexExpression) TokenLiteral() string { return a.Token.Literal }
-func (a *ArrayIndexExpression) String() string {
+func (a *IndexExpression) expressionNode()      {}
+func (a *IndexExpression) TokenLiteral() string { return a.Token.Literal }
+func (a *IndexExpression) String() string {
 	var out bytes.Buffer
 
 	out.WriteString(a.Left.String())

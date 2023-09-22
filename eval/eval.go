@@ -61,8 +61,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return hash
-	case *ast.ArrayIndexExpression:
-		return evalArrayIndex(v, env)
+	case *ast.IndexExpression:
+		return evalIndexExression(v, env)
 	case *ast.PrefixExpression:
 		val := Eval(v.Right, env)
 		if isError(val) {
@@ -410,20 +410,28 @@ func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Ob
 	return result
 }
 
-func evalArrayIndex(arr *ast.ArrayIndexExpression, env *object.Environment) object.Object {
+func evalIndexExression(arr *ast.IndexExpression, env *object.Environment) object.Object {
 	left := Eval(arr.Left, env)
 	if isError(left) {
 		return left
 	}
 
-	array, ok := left.(*object.Array)
-	if !ok {
-		return newError("failed to read index on type %s", left.Type())
+	switch v := left.(type) {
+	case *object.Array:
+		return evalArrayIndexExression(v, arr.Index, env)
+	case *object.Hash:
+		return evalHashIndexExression(v, arr.Index, env)
+	default:
+		return newError("failed to read index on type %s", v.Type())
 	}
 
-	ind := Eval(arr.Index, env)
-	if isError(left) {
-		return left
+}
+
+func evalArrayIndexExression(array *object.Array, i ast.Expression, env *object.Environment) object.Object {
+
+	ind := Eval(i, env)
+	if isError(ind) {
+		return ind
 	}
 
 	index, ok := ind.(*object.Integer)
@@ -443,7 +451,28 @@ func evalArrayIndex(arr *ast.ArrayIndexExpression, env *object.Environment) obje
 	}
 
 	return array.Items[index.Value]
+}
 
+func evalHashIndexExression(hash *object.Hash, i ast.Expression, env *object.Environment) object.Object {
+
+	ind := Eval(i, env)
+	if isError(ind) {
+		return ind
+	}
+
+	if ind.Type() != object.STRING_OBJ && ind.Type() != object.BOOLEAN_OBJ && ind.Type() != object.INTEGER_OBJ {
+		return newError("invalid hash key  %s of type %s ",
+			ind.Inspect(),
+			ind.Type(),
+		)
+	}
+
+	result, ok := hash.Items[ind]
+	if !ok {
+		return newError("attempts to read undefined hash key [%s]", ind.Inspect())
+	}
+
+	return result
 }
 
 func nativeBooleanObject(input bool) *object.Boolean {
