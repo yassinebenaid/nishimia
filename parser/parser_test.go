@@ -687,6 +687,46 @@ func TestFunctionCallArgumentParsing(t *testing.T) {
 	}
 }
 
+func TestArrayLiteralParsing(t *testing.T) {
+	input := `[10, 2*5, "yassinebenaid",func(){}];`
+
+	tests := []string{
+		"10",
+		"(2 * 5)",
+		"yassinebenaid",
+		"func(){}",
+	}
+
+	l := lexer.New(input)
+	par := New(l)
+	program := par.ParseProgram()
+	checkParserErrors(t, par)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("expected statements count to be 1, got=%d", len(program.Statements))
+	}
+
+	stat, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("expected statement type of ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	arr, ok := stat.Expression.(*ast.ArrayLiteral)
+	if !ok {
+		t.Fatalf("expected statement type of ArrayLiteral, got=%T", stat)
+	}
+
+	if len(arr.Items) != 4 {
+		t.Fatalf("expected array items count to be 4, got=%d", len(arr.Items))
+	}
+
+	for i, test := range tests {
+		if test != arr.Items[i].String() {
+			t.Fatalf("expected argument to be %s, got %s", test, arr.Items[i].String())
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	if len(p.errors) == 0 {
 		return

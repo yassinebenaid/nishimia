@@ -279,7 +279,7 @@ func (fn *FunctionLiteral) TokenLiteral() string { return fn.Token.Literal }
 func (fn *FunctionLiteral) String() string {
 	var out bytes.Buffer
 
-	out.WriteString("fn(")
+	out.WriteString("func(")
 
 	var params []string
 	for _, param := range fn.Params {
@@ -317,6 +317,29 @@ func (c *CallExpression) String() string {
 	out.WriteString("(")
 	out.WriteString(strings.Join(args, ", "))
 	out.WriteString(")")
+
+	return out.String()
+}
+
+// This node represents the array ,.
+type ArrayLiteral struct {
+	Token token.Token
+	Items []Expression
+}
+
+func (a *ArrayLiteral) expressionNode()      {}
+func (a *ArrayLiteral) TokenLiteral() string { return a.Token.Literal }
+func (a *ArrayLiteral) String() string {
+	var out bytes.Buffer
+
+	var items []string
+	for _, item := range a.Items {
+		items = append(items, item.String())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(items, ", "))
+	out.WriteString("]")
 
 	return out.String()
 }

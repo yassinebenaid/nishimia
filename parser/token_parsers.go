@@ -244,3 +244,28 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 
 	return args
 }
+
+func (p *Parser) parseArrayExpression() ast.Expression {
+	var items []ast.Expression
+
+	if p.peekTokenIs(token.RBRACKET) {
+		p.nextToken()
+		return &ast.ArrayLiteral{Items: items}
+	}
+
+	p.nextToken()
+
+	items = append(items, p.parseExpression(LOWEST))
+
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		items = append(items, p.parseExpression(LOWEST))
+	}
+
+	if !p.expectPeek(token.RBRACKET) {
+		return nil
+	}
+
+	return &ast.ArrayLiteral{Items: items}
+}
