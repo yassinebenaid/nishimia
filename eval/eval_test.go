@@ -359,6 +359,41 @@ func TestArrayIndexExpression(t *testing.T) {
 
 }
 
+func TestHashes(t *testing.T) {
+	input := `{"name":"yassinebenaid","age":21}`
+
+	evaluated := testEval(input)
+
+	hash, ok := evaluated.(*object.Hash)
+	if !ok {
+		t.Fatalf("expected evaluation to yield object of type object.Hash, got=%T", evaluated)
+	}
+
+	if len(hash.Items) != 2 {
+		t.Fatalf("expected array length to be 2, got=%T", len(hash.Items))
+	}
+
+	tests := map[string]any{
+		"name": "yassinebenaid",
+		"age":  21,
+	}
+
+	for k, v := range hash.Items {
+		testStringObject(t, k, k.Inspect())
+		val, ok := tests[k.Inspect()]
+		if !ok {
+			t.Fatalf("failed asserting that key exists : %s", k.Inspect())
+		}
+
+		switch val := val.(type) {
+		case string:
+			testStringObject(t, v, val)
+		case int:
+			testIntegerObject(t, v, int64(val))
+		}
+	}
+}
+
 func testEval(inp string) object.Object {
 	lex := lexer.New(inp)
 	par := parser.New(lex)

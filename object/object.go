@@ -20,6 +20,7 @@ const (
 	FUNCTION_OBJ         ObjectType = "FUNCTION"
 	BUILTIN_FUNCTION_OBJ ObjectType = "BUILTIN_FUNCTION"
 	ARRAY_OBJ            ObjectType = "ARRAY"
+	HASH_OBJ             ObjectType = "HASH"
 )
 
 type Object interface {
@@ -138,4 +139,19 @@ func (a *Array) Inspect() string {
 	}
 
 	return "[" + strings.Join(items, ", ") + "]"
+}
+
+type Hash struct {
+	Items map[Object]Object
+}
+
+func (*Hash) Type() ObjectType { return ARRAY_OBJ }
+func (h *Hash) Inspect() string {
+	var items []string
+
+	for k, v := range h.Items {
+		items = append(items, k.Inspect()+": "+v.Inspect())
+	}
+
+	return "{" + strings.Join(items, ", ") + "}"
 }

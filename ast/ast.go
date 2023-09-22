@@ -377,11 +377,17 @@ func (h *HashLiteral) String() string {
 
 	out.WriteString("{")
 
+	var count int
 	for k, v := range h.Items {
+		count++
+
 		out.WriteString(k.String())
 		out.WriteString(": ")
 		out.WriteString(v.String())
-		out.WriteString(" ,")
+
+		if count < len(h.Items) {
+			out.WriteString(" ,")
+		}
 	}
 
 	out.WriteString("}")

@@ -43,6 +43,24 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return arr
+	case *ast.HashLiteral:
+		hash := &object.Hash{Items: make(map[object.Object]object.Object)}
+
+		for k, v := range v.Items {
+			key := Eval(k, env)
+			if isError(key) {
+				return key
+			}
+
+			val := Eval(v, env)
+			if isError(val) {
+				return val
+			}
+
+			hash.Items[key] = val
+		}
+
+		return hash
 	case *ast.ArrayIndexExpression:
 		return evalArrayIndex(v, env)
 	case *ast.PrefixExpression:
@@ -85,7 +103,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.ReturnValue{Value: val}
 	}
 
-	return NULL
+	return newError("unknown expression : %s", node.String())
 }
 
 func evalProgram(stmts []ast.Statement, env *object.Environment) object.Object {
