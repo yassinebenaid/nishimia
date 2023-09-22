@@ -271,24 +271,43 @@ func (p *Parser) parseArrayExpression() ast.Expression {
 }
 
 func (p *Parser) parseHashExpression() ast.Expression {
-	var items map[ast.Expression]ast.Expression
+	items := map[ast.Expression]ast.Expression{}
 
-	if p.peekTokenIs(token.RBRACKET) {
+	if p.peekTokenIs(token.RBRACE) {
 		p.nextToken()
-		return &ast.ArrayLiteral{Items: items}
+		return &ast.HashLiteral{Items: items}
 	}
 
 	p.nextToken()
 
-	items = append(items, p.parseExpression(LOWEST))
+	key := p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.COLON) {
+		return nil
+	}
+
+	p.nextToken()
+
+	value := p.parseExpression(LOWEST)
+
+	items[key] = value
 
 	for p.peekTokenIs(token.COMMA) {
 		p.nextToken()
 		p.nextToken()
-		items = append(items, p.parseExpression(LOWEST))
+
+		key := p.parseExpression(LOWEST)
+
+		if !p.expectPeek(token.COLON) {
+			return nil
+		}
+
+		p.nextToken()
+		value := p.parseExpression(LOWEST)
+		items[key] = value
 	}
 
-	if !p.expectPeek(token.RBRACKET) {
+	if !p.expectPeek(token.RBRACE) {
 		return nil
 	}
 

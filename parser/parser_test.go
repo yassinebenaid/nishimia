@@ -772,14 +772,11 @@ func TestArrayIndexParsing(t *testing.T) {
 }
 
 func TestHashLiteralParsing(t *testing.T) {
-	input := `{name: "yassinebenaid",age: 10};`
+	input := `{"name": "yassinebenaid","age": 10};`
 
-	tests := []struct {
-		expectedKey   string
-		expectedValue any
-	}{
-		{"name", "yassinebenaid"},
-		{"age", 10},
+	tests := map[string]any{
+		"name": "yassinebenaid",
+		"age":  10,
 	}
 
 	l := lexer.New(input)
@@ -805,15 +802,22 @@ func TestHashLiteralParsing(t *testing.T) {
 		t.Fatalf("expected hash items count to be 2, got=%d", len(hash.Items))
 	}
 
-	for _, tt := range tests {
-
-		item, ok := hash.Items[tt.expectedKey]
+	for k, v := range hash.Items {
+		key, ok := k.(*ast.StringLiteral)
 		if !ok {
-			t.Fatalf("failed to assert that the hash has item : %s", tt.expectedKey)
+			t.Fatalf("expected hash key to be type of StringLiteral, got=%T", k)
 		}
 
-		if item.String() != tt.expectedValue {
-			t.Fatalf("failed to assert that the %s is to %s", tt.expectedValue, item)
+		value, ok := tests[key.Value]
+		if !ok {
+			t.Fatalf("failed to assrt that hash key exists  %s", key.Value)
+		}
+
+		switch val := value.(type) {
+		case string:
+			testStringLiteral(t, v, val)
+		case int:
+			testIntegerLiteral(t, v, int64(val))
 		}
 	}
 
