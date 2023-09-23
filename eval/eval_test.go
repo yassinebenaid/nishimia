@@ -378,18 +378,18 @@ func TestHashes(t *testing.T) {
 		"age":  21,
 	}
 
-	for k, v := range hash.Items {
-		testStringObject(t, k, k.Inspect())
-		val, ok := tests[k.Inspect()]
+	for _, item := range hash.Items {
+		testStringObject(t, item.Key, item.Key.Inspect())
+		val, ok := tests[item.Key.Inspect()]
 		if !ok {
-			t.Fatalf("failed asserting that key exists : %s", k.Inspect())
+			t.Fatalf("failed asserting that key exists : %s", item.Key.Inspect())
 		}
 
 		switch val := val.(type) {
 		case string:
-			testStringObject(t, v, val)
+			testStringObject(t, item.Value, val)
 		case int:
-			testIntegerObject(t, v, int64(val))
+			testIntegerObject(t, item.Value, int64(val))
 		}
 	}
 }
@@ -414,7 +414,7 @@ func TestHashIndexExpression(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{`{"name":"yassinebenaid"}["name"]`, 1},
+		{`{"name":"yassinebenaid"}["name"]`, "yassinebenaid"},
 		{`{"age": 2*10/2}["age"]`, 10},
 		{`var hash = {"age": 2*10/2};hash["age"]`, 10},
 		{`var hash = func(){ return {"age": 2*10/2};};hash()["age"]`, 10},
@@ -427,19 +427,19 @@ func TestHashIndexExpression(t *testing.T) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
 		case string:
-			errObj, ok := evaluated.(*object.Error)
-			if !ok {
-				t.Errorf("object is not Error. got=%T (%+v)",
-					evaluated, evaluated)
-				continue
+			switch v := evaluated.(type) {
+			case *object.Error:
+				if v.Message != expected {
+					t.Errorf("wrong error message. expected=%q, got=%q", expected, v.Message)
+				}
+			case *object.String:
+				testStringObject(t, v, expected)
+			default:
+				t.Errorf("unhandled object type . got=%T (%+v)", evaluated, evaluated)
 			}
-			if errObj.Message != expected {
-				t.Errorf("wrong error message. expected=%q, got=%q",
-					expected, errObj.Message)
-			}
+
 		}
 	}
-
 }
 
 func testEval(inp string) object.Object {
@@ -452,11 +452,11 @@ func testEval(inp string) object.Object {
 func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 	result, ok := obj.(*object.Integer)
 	if !ok {
-		t.Errorf("object is not Integer. got=%T (%+v)", obj, obj)
+		t.Errorf("integer object is not Integer. got=%T (%+v)", obj, obj)
 		return false
 	}
 	if result.Value != expected {
-		t.Errorf("object has wrong value. got=%d, want=%d",
+		t.Errorf("integer object has wrong value. got=%d, want=%d",
 			result.Value, expected)
 		return false
 	}
@@ -467,11 +467,11 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 	result, ok := obj.(*object.String)
 	if !ok {
-		t.Errorf("object is not String. got=%T (%+v)", obj, obj)
+		t.Errorf("string object is not String. got=%T (%+v)", obj, obj)
 		return false
 	}
 	if result.Value != expected {
-		t.Errorf("object has wrong value. got=%s, want=%s",
+		t.Errorf("string object has wrong value. got=%s, want=%s",
 			result.Value, expected)
 		return false
 	}
@@ -482,11 +482,11 @@ func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	result, ok := obj.(*object.Boolean)
 	if !ok {
-		t.Errorf("object is not Boolean. got=%T (%+v)", obj, obj)
+		t.Errorf("boolean object is not Boolean. got=%T (%+v)", obj, obj)
 		return false
 	}
 	if result.Value != expected {
-		t.Errorf("object has wrong value. got=%t, want=%t",
+		t.Errorf("boolean object has wrong value. got=%t, want=%t",
 			result.Value, expected)
 		return false
 	}

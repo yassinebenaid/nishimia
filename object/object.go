@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"strings"
 
 	"github.com/yassinebenaid/nishimia/ast"
@@ -40,6 +41,10 @@ func (i *Integer) Type() ObjectType {
 	return INTEGER_OBJ
 }
 
+func (i *Integer) HashKey() HashKey {
+	return HashKey{Type: i.Type(), Value: uint64(i.Value)}
+}
+
 type String struct {
 	Value string
 }
@@ -52,16 +57,34 @@ func (str *String) Type() ObjectType {
 	return STRING_OBJ
 }
 
+func (s *String) HashKey() HashKey {
+	h := fnv.New64()
+	h.Write([]byte(s.Value))
+	return HashKey{Type: s.Type(), Value: h.Sum64()}
+}
+
 type Boolean struct {
 	Value bool
 }
 
-func (i *Boolean) Inspect() string {
-	return fmt.Sprintf("%t", i.Value)
+func (b *Boolean) Inspect() string {
+	return fmt.Sprintf("%t", b.Value)
 }
 
-func (i *Boolean) Type() ObjectType {
+func (*Boolean) Type() ObjectType {
 	return BOOLEAN_OBJ
+}
+
+func (b *Boolean) HashKey() HashKey {
+	var hk = HashKey{Type: b.Type()}
+
+	if b.Value {
+		hk.Value = 1
+	} else {
+		hk.Value = 0
+	}
+
+	return hk
 }
 
 type Null struct{}
@@ -141,17 +164,27 @@ func (a *Array) Inspect() string {
 	return "[" + strings.Join(items, ", ") + "]"
 }
 
+type HashPair struct {
+	Key   Object
+	Value Object
+}
+
 type Hash struct {
-	Items map[Object]Object
+	Items map[HashKey]HashPair
 }
 
 func (*Hash) Type() ObjectType { return ARRAY_OBJ }
 func (h *Hash) Inspect() string {
 	var items []string
 
-	for k, v := range h.Items {
-		items = append(items, k.Inspect()+": "+v.Inspect())
+	for _, item := range h.Items {
+		items = append(items, item.Key.Inspect()+": "+item.Value.Inspect())
 	}
 
 	return "{" + strings.Join(items, ", ") + "}"
+}
+
+type HashKey struct {
+	Type  ObjectType
+	Value uint64
 }

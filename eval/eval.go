@@ -44,23 +44,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return arr
 	case *ast.HashLiteral:
-		hash := &object.Hash{Items: make(map[object.Object]object.Object)}
-
-		for k, v := range v.Items {
-			key := Eval(k, env)
-			if isError(key) {
-				return key
-			}
-
-			val := Eval(v, env)
-			if isError(val) {
-				return val
-			}
-
-			hash.Items[key] = val
-		}
-
-		return hash
+		return evalHash(v, env)
 	case *ast.IndexExpression:
 		return evalIndexExression(v, env)
 	case *ast.PrefixExpression:
@@ -410,6 +394,40 @@ func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Ob
 	return result
 }
 
+func evalHash(hash *ast.HashLiteral, env *object.Environment) object.Object {
+	h := &object.Hash{Items: make(map[object.HashKey]object.HashPair)}
+
+	for k, v := range hash.Items {
+		key := Eval(k, env)
+		if isError(key) {
+			return key
+		}
+
+		val := Eval(v, env)
+		if isError(val) {
+			return val
+		}
+
+		var hashKey object.HashKey
+		if b, ok := key.(*object.Boolean); ok {
+			hashKey = b.HashKey()
+		} else if i, ok := key.(*object.Integer); ok {
+			hashKey = i.HashKey()
+		} else if s, ok := key.(*object.String); ok {
+			hashKey = s.HashKey()
+		} else {
+			return newError("cannot use value of type %T as hash key", key)
+		}
+
+		h.Items[hashKey] = object.HashPair{
+			Key:   key,
+			Value: val,
+		}
+	}
+
+	return h
+}
+
 func evalIndexExression(arr *ast.IndexExpression, env *object.Environment) object.Object {
 	left := Eval(arr.Left, env)
 	if isError(left) {
@@ -467,12 +485,23 @@ func evalHashIndexExression(hash *object.Hash, i ast.Expression, env *object.Env
 		)
 	}
 
-	result, ok := hash.Items[ind]
+	var hashKey object.HashKey
+	if b, ok := ind.(*object.Boolean); ok {
+		hashKey = b.HashKey()
+	} else if i, ok := ind.(*object.Integer); ok {
+		hashKey = i.HashKey()
+	} else if s, ok := ind.(*object.String); ok {
+		hashKey = s.HashKey()
+	} else {
+		return newError("cannot use value of type %T as hash key", ind)
+	}
+
+	result, ok := hash.Items[hashKey]
 	if !ok {
 		return newError("attempts to read undefined hash key [%s]", ind.Inspect())
 	}
 
-	return result
+	return result.Value
 }
 
 func nativeBooleanObject(input bool) *object.Boolean {
