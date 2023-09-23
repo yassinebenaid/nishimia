@@ -129,4 +129,8 @@ To run a source code from a file , run `./nishimia path/to/file.ns`
 
 # Warning
 
-please if you like this language and decided to rewrite all your SAAS projects and services using it, please don't , just don't , thanks.
+I know what's your thinking of , you like this language, you think this will change the world, you think you can rewrite all your projects using it , you think as a great language and if you recommend it to your company of whoever else , they'll like it and ask you to rewrite their projects too using it, you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you're you can then hack NASA,
+
+    **WAKE UP BABY**
+
+you're dreaming ha ha ha ha ha ha
