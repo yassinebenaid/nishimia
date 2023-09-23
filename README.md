@@ -129,7 +129,7 @@ To run a source code from a file , run `./nishimia path/to/file.ns`
 
 # Warning
 
-I know what's your thinking of , you like this language, you think it will change the world, you think you can rewrite all your projects using it , you think its a great language and if you recommend it to your company of whoever else , they'll like it and ask you to rewrite their projects too using it, you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you're you can then hack NASA,
+I know what's your thinking of , you like this language, you think it will change the world, you think you can rewrite all your projects using it , you think its a great language and if you recommend it to your company or whoever else , they'll like it and ask you to rewrite their projects too using it, you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you're you can then hack NASA,
 
 **WAKE UP BABY** you're dreaming ha ha ha ha ha ha 
 
