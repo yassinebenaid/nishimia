@@ -7,6 +7,7 @@ A fully functional interpreter built on top of [go programming language](https:/
   - integers
   - booleans
   - arrays
+  - hash tables
   - null
 - functions
 - built in functions
@@ -101,6 +102,19 @@ AcceptClosure(func(v){
 var myArr = [1,2,3,"yassinebenaid"]
 myArr[0];
 myArr[2+2-1];
+
+
+var myHash = {
+	"name": "yassinebenaid",
+	"age": 21,
+	"role": func() {
+		return "web developer";
+	}
+};
+
+myHash["name"];
+myHash["age"];
+myHash["role"]();
 ```
 
 ## Installation && Testing

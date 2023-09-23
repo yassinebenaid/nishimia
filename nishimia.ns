@@ -58,7 +58,7 @@ var max = func(x, y) {
 
 
 var name = "yassine benaid";
-len(name); // len is built in here , and this comment is not supported by the way
+len(name);  
 
 var getAdditionClosure = func(x) {
 	return func(i) { return x + i;};
@@ -76,6 +76,18 @@ AcceptClosure(func(v){
 	return v * 15;
 },10)
 
-var myArr = [1,2,3,"yassinebenaid"]
+var myArr = [1,2,3,"yassinebenaid"];
 myArr[0];
 myArr[2+2-1];
+
+var myHash = {
+	"name": "yassinebenaid",
+	"age": 21,
+	"role": func(){
+				return "web developer";
+			}
+};
+
+myHash["name"];
+myHash["age"];
+myHash["role"]();
