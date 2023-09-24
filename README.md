@@ -126,9 +126,9 @@ To run a source code from a file pass the path as first argument , run `./nishim
 
 # Warning
 
-I know what's your thinking of , you like this language, you think it'll change the world, you think you build you next SaaS business with it.
+I know what's your thinking of , you like this language and think it'll change the world, you think you can build you next SaaS business with it.
 
-you think its a great language and if you recommend it to your company they'll increase your salary you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` ,as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you can then hack NASA,
+you think its a great language and if you recommend it to your company they'll increase your salary , you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` ,as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you can then hack NASA,
 
 **WAKE UP BABY** you're dreaming ha ha ha ha ha ha 
 
