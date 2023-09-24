@@ -116,7 +116,7 @@ myHash["role"]();
 
 ## Installation && Testing
 
-To get started , clone this repository , then in the project directory run : `go build -o nishimia` , this will built the executable file named `nishimia`, 
+To get started , clone this repository , then in the project directory run : `go build -o nishimia` , this will build an executable file named `nishimia`, 
 
 The interpreter comes with a `repl` out of the box , similar to what python has , you can use it to run the code on the fly, run `./nishimia` with no extra arguments to get started
 
