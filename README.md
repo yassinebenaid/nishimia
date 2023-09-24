@@ -1,7 +1,6 @@
 # nishimia
 
-A fully functional interpreter built on top of [go programming language](https://go.dev), This is an educational project, and so its not that fancy , but though its still fully functional with support for :
-
+A fully functional interpreter for my own langaue called `nishimia`, weird name I know, however its real, it does interpret the language below with support for :
 - variables and bindings
 - data types :
   - integers
@@ -16,9 +15,7 @@ A fully functional interpreter built on top of [go programming language](https:/
 - functions are first-class citizens , this means you can pass them as arguments or return them as values,
 - error handling out of the box
 
-none of the above features perfect , but as said, its still work perfectly .
-
-here is a sinppet of all available features :
+here is a sinppet of rhe syntax with all the available features :
 
 ```go
 var five = 5;
@@ -119,22 +116,21 @@ myHash["role"]();
 
 ## Installation && Testing
 
-To get started , clone this repository , then in the project directory run : `go build -o nishimia` , this will built the executable for you,
+To get started , clone this repository , then in the project directory run : `go build -o nishimia` , this will built the executable file named `nishimia`, 
 
-The interpreter comes with a `repl` , you can use to run the code in the fly, run `./nishimia` with no extra arguments to get started
+The interpreter comes with a `repl` out of the box , similar to what python has , you can use it to run the code on the fly, run `./nishimia` with no extra arguments to get started
 
 ![image](https://github.com/yassinebenaid/nishimia/assets/101285507/c4902ca9-e6e0-4a4d-b3b3-5886bdd2a018)
 
-To run a source code from a file , run `./nishimia path/to/file.ns`
+To run a source code from a file pass the path as first argument , run `./nishimia path/to/file.ns`
 
 # Warning
 
-I know what's your thinking of , you like this language, you think it will change the world, you think you can rewrite all your projects using it , you think its a great language and if you recommend it to your company or whoever else , they'll like it and ask you to rewrite their projects too using it, you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` ,as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you can then hack NASA,
+I know what's your thinking of , you like this language, you think it'll change the world, you think you build you next SaaS business with it.
+
+you think its a great language and if you recommend it to your company they'll increase your salary you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` ,as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you can then hack NASA,
 
 **WAKE UP BABY** you're dreaming ha ha ha ha ha ha 
 
 
  ![evil](https://github.com/yassinebenaid/nishimia/assets/101285507/dfc08162-4f55-4bf1-9dd5-31bf1a8dcdcb)
-
- 
-
