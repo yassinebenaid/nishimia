@@ -123,14 +123,3 @@ The interpreter comes with a `repl` out of the box , similar to what python has 
 ![image](https://github.com/yassinebenaid/nishimia/assets/101285507/c4902ca9-e6e0-4a4d-b3b3-5886bdd2a018)
 
 To run a source code from a file pass the path as first argument , run `./nishimia path/to/file.ns`
-
-# Warning
-
-I know what's your thinking of , you like this language and think it'll change the world, you think you can build you next SaaS business with it.
-
-you think its a great language and if you recommend it to your company they'll increase your salary , you think you can earn mony if you expert it, you like the function definition especially it doesn't have the keyword `function` ,as you only bind closures to variables and thats it, you think if you spent 3-4 years learning this great language you can then hack NASA,
-
-**WAKE UP BABY** you're dreaming ha ha ha ha ha ha 
-
-
- ![evil](https://github.com/yassinebenaid/nishimia/assets/101285507/dfc08162-4f55-4bf1-9dd5-31bf1a8dcdcb)
