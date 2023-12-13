@@ -15,7 +15,7 @@ A fully functional interpreter for my own langaue called `nishimia`, weird name 
 - functions are first-class citizens , this means you can pass them as arguments or return them as values,
 - error handling out of the box
 
-here is a sinppet of rhe syntax with all the available features :
+here is a sinppet of the syntax with all the available features :
 
 ```go
 var five = 5;
