@@ -32,6 +32,8 @@ var multiply = func(x, y) {
 	return x * y;
 };
 
+var value = 10 * 15 + 8 / 7 - 3 * ( 7 + 8); // evaluated as (10 * 15) + (8 / 7) - (3 * (7 + 8))
+
 var multiplied = multiply(five, add(ten,10));
 
 var devide = func(x, y) {
@@ -113,6 +115,7 @@ myHash["name"];
 myHash["age"];
 myHash["role"]();
 ```
+
 
 ## Installation && Testing
 
