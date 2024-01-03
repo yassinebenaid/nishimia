@@ -27,7 +27,6 @@ var add = func(x, y) {
 
 var added = add(five,ten);
 
-
 var multiply = func(x, y) {
 	return x * y;
 };
