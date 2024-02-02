@@ -7,7 +7,7 @@ func TestStringHashKey(t *testing.T) {
 	hello2 := &String{Value: "hello world"}
 	name1 := &String{Value: "yassinebenaid"}
 	name2 := &String{Value: "yassinebenaid"}
-
+	 
 	if hello1.HashKey() != hello2.HashKey() {
 		t.Errorf("strings with same content have different hash keys")
 	}
@@ -17,11 +17,11 @@ func TestStringHashKey(t *testing.T) {
 	}
 
 	if hello1.HashKey() == name1.HashKey() {
-		t.Errorf("strings with different content have same hash keys")
+		t.Errorf("strings with different content have the same hash keys")
 	}
 
 	if hello2.HashKey() == name2.HashKey() {
-		t.Errorf("strings with different content have same hash keys")
+		t.Errorf("strings with different content have the same hash keys")
 	}
 }
 
@@ -40,11 +40,11 @@ func TestIntegerHashKey(t *testing.T) {
 	}
 
 	if ten1.HashKey() == five1.HashKey() {
-		t.Errorf("integers with different content have same hash keys")
+		t.Errorf("integers with different content have the same hash keys")
 	}
 
 	if ten2.HashKey() == five2.HashKey() {
-		t.Errorf("integers with different content have same hash keys")
+		t.Errorf("integers with different content have the same hash keys")
 	}
 }
 
@@ -63,10 +63,10 @@ func TestBooleanHashKey(t *testing.T) {
 	}
 
 	if true1.HashKey() == false1.HashKey() {
-		t.Errorf("booleans with different content have same hash keys")
+		t.Errorf("booleans with different content have the same hash keys")
 	}
 
 	if true2.HashKey() == false2.HashKey() {
-		t.Errorf("booleans with different content have same hash keys")
+		t.Errorf("booleans with different content have the same hash keys")
 	}
 }
