@@ -1,6 +1,6 @@
 # nishimia
 
-A fully functional interpreter for a custom language called `nishimia`, weird name I know. However, its real and does interpret the language below with support for :
+A fully functional interpreter for a custom language called `nishimia`, weird name I know. However, its real and does interpret the language below with support for:
 - variables and bindings
 - data types :
   - integers
